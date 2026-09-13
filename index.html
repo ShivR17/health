@@ -7,6 +7,7 @@
 <title>Shivam Rathi — Health Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta http-equiv="Cache-Control" content="no-cache">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -403,11 +404,11 @@ paint();
 /* ===== constants ===== */
 var DAY0=new Date(2026,8,13);
 var BASE=[
-{d:'18 Oct 25',t:'10:42',w:77.45,bf:22.30,mm:57.05,vf:9.5,bmi:25.1,mq:71,fat:17.3},
-{d:'27 Dec 25',t:'16:37',w:76.40,bf:20.80,mm:57.40,vf:9.0,bmi:24.8,mq:76,fat:15.9},
-{d:'01 May 26',t:'10:15',w:76.30,bf:21.50,mm:56.80,vf:9.0,bmi:24.8,mq:70,fat:16.4},
-{d:'21 Jun 26',t:'17:58',w:77.50,bf:22.90,mm:56.65,vf:10.0,bmi:25.2,mq:74,fat:17.8},
-{d:'11 Sep 26',t:'21:23',w:83.00,bf:23.10,mm:60.50,vf:11.0,bmi:26.9,mq:77,fat:19.2}];
+{d:'18 Oct 25',t:'10:42',iso:'2025-10-18',w:77.45,bf:22.30,mm:57.05,vf:9.5,bmi:25.1,mq:71,fat:17.3},
+{d:'27 Dec 25',t:'16:37',iso:'2025-12-27',w:76.40,bf:20.80,mm:57.40,vf:9.0,bmi:24.8,mq:76,fat:15.9},
+{d:'01 May 26',t:'10:15',iso:'2026-05-01',w:76.30,bf:21.50,mm:56.80,vf:9.0,bmi:24.8,mq:70,fat:16.4},
+{d:'21 Jun 26',t:'17:58',iso:'2026-06-21',w:77.50,bf:22.90,mm:56.65,vf:10.0,bmi:25.2,mq:74,fat:17.8},
+{d:'11 Sep 26',t:'21:23',iso:'2026-09-11',w:83.00,bf:23.10,mm:60.50,vf:11.0,bmi:26.9,mq:77,fat:19.2}];
 var KEY=[{wk:0,w:83.0,bf:23.1,wa:36,vf:11},{wk:2,w:80.5,bf:22.3,wa:35.5,vf:10.6},
 {wk:12.5,w:75.9,bf:18.7,wa:34,vf:8.5},
 {wk:16,w:76.3,bf:19.0,wa:34.2,vf:8.7},{wk:20.5,w:72.4,bf:15.8,wa:32.6,vf:7.5}];
@@ -454,9 +455,11 @@ function authUI(){var b=document.getElementById('authbtn');if(!b)return;
 function cloudInit(c){SB=c;
   c.auth.getSession().then(function(x){onAuth(x.data.session)});
   c.auth.onAuthStateChange(function(_,ss){onAuth(ss)})}
+var ASKED=false;
 function onAuth(ss){USER=(ss&&ss.user)||null;
   if(USER){CLOUD=true;sync('Syncing\u2026','warn');cloudPull()}
-  else{CLOUD=false;sync('Saved on this device','ok')}
+  else{CLOUD=false;sync('Not signed in \u2014 saved on this device','warn');
+    if(!ASKED){ASKED=true;openAuth()}}
   authUI()}
 function cloudPull(){
   SB.from('measurements').select('*').order('taken_on').then(function(x){
@@ -539,10 +542,17 @@ ST.forEach(function(s,i){var e=document.createElement('div');
 /* ===== chart ===== */
 var SER=[{k:'w',n:'Weight',c:'#14605A',on:1},{k:'fat',n:'Fat mass',c:'#A8452F',on:1},
 {k:'mm',n:'Muscle',c:'#5A9A91',on:1},{k:'vf',n:'Visceral',c:'#B4702C',on:0},{k:'bf',n:'Body fat %',c:'#2E7D5B',on:0}];
-function scans(){return BASE.concat(LOG.filter(function(e){return e.w}).map(function(e){var d=new Date(e.date);
-  return{d:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}),t:'logged',w:e.w,
-  bf:e.bf||null,mm:e.mm||null,vf:e.vf||null,bmi:+(e.w/3.0976).toFixed(1),mq:null,
-  fat:e.bf?+(e.w*e.bf/100).toFixed(1):null,mine:1}}))}
+function scans(){
+  var by={},k;
+  BASE.forEach(function(p){by[p.iso]=p});
+  LOG.forEach(function(e){
+    if(e.w==null)return;
+    var was=by[e.date]||{},d=new Date(e.date);
+    by[e.date]={iso:e.date,d:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}),
+      t:was.t||'logged',w:e.w,bf:e.bf!=null?e.bf:null,mm:e.mm!=null?e.mm:null,
+      vf:e.vf!=null?e.vf:null,bmi:+(e.w/3.0976).toFixed(1),mq:was.mq||null,
+      fat:e.bf!=null?+(e.w*e.bf/100).toFixed(1):null,mine:1}});
+  return Object.keys(by).sort().map(function(x){return by[x]})}
 var tip=document.getElementById('tip');
 function tShow(e,h){tip.innerHTML=h;tip.style.opacity=1;var x=e.clientX+12,y=e.clientY-10;
   if(x+206>innerWidth)x=innerWidth-212;if(x<6)x=6;if(y<8)y=8;tip.style.left=x+'px';tip.style.top=y+'px'}
@@ -739,7 +749,9 @@ function openAuth(){
     '<div class="fl"><label for="au_p">Password</label>'+
     '<input id="au_p" name="password" type="password" autocomplete="current-password" required></div>'+
     '<div id="au_m" style="font-size:12.5px;color:var(--red);margin:0 0 11px;display:none"></div>'+
-    '<button class="btn" type="submit" id="au_go">Sign in</button></form>';
+    '<button class="btn" type="submit" id="au_go">Sign in</button></form>'+
+    '<button type="button" id="au_skip" style="width:100%;margin-top:9px;border:none;background:none;'+
+    'color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Not now, use this device only</button>';
   document.getElementById('scrim').classList.add('on');
   document.getElementById('authf').onsubmit=function(ev){ev.preventDefault();
     var e=document.getElementById('au_e').value.trim(),
@@ -750,6 +762,8 @@ function openAuth(){
       b.disabled=false;b.textContent='Sign in';
       if(x.error){m.textContent=x.error.message;m.style.display='block';return}
       document.getElementById('scrim').classList.remove('on')})};
+  document.getElementById('au_skip').onclick=function(){
+    document.getElementById('scrim').classList.remove('on')};
   setTimeout(function(){document.getElementById('au_e').focus()},60)}
 </script>
 <script type="module">
