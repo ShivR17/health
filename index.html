@@ -727,15 +727,30 @@ document.querySelectorAll('#nav button').forEach(function(b){b.onclick=function(
 today();draw();paint();persist();
 document.getElementById('authbtn').onclick=function(){
   if(!SB){alert('Cloud is not loaded. Check your connection and reload.');return}
-  if(USER){SB.auth.signOut();return}
-  var em=prompt('Email address for your sign-in link:');
-  if(!em)return;
-  sync('Sending link\u2026','warn');
-  SB.auth.signInWithOtp({email:em.trim(),options:{emailRedirectTo:location.origin+location.pathname}})
-   .then(function(x){
-     if(x.error){sync('Could not send link','warn');alert('Could not send link: '+x.error.message)}
-     else{sync('Link sent \u2014 open it on this device','warn');
-          alert('Check your email. Open the link on this device.')}})};
+  if(USER){if(confirm('Sign out? Your log stays on this device.'))SB.auth.signOut();return}
+  openAuth()};
+function openAuth(){
+  document.getElementById('mb').innerHTML=
+    '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Sign in</div>'+
+    '<p style="font-size:13px;color:var(--muted);margin:0 0 15px;line-height:1.5">Your log syncs to every device you sign in on.</p>'+
+    '<form id="authf">'+
+    '<div class="fl"><label for="au_e">Email</label>'+
+    '<input id="au_e" name="email" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>'+
+    '<div class="fl"><label for="au_p">Password</label>'+
+    '<input id="au_p" name="password" type="password" autocomplete="current-password" required></div>'+
+    '<div id="au_m" style="font-size:12.5px;color:var(--red);margin:0 0 11px;display:none"></div>'+
+    '<button class="btn" type="submit" id="au_go">Sign in</button></form>';
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('authf').onsubmit=function(ev){ev.preventDefault();
+    var e=document.getElementById('au_e').value.trim(),
+        w=document.getElementById('au_p').value,
+        m=document.getElementById('au_m'),b=document.getElementById('au_go');
+    b.disabled=true;b.textContent='Signing in\u2026';m.style.display='none';
+    SB.auth.signInWithPassword({email:e,password:w}).then(function(x){
+      b.disabled=false;b.textContent='Sign in';
+      if(x.error){m.textContent=x.error.message;m.style.display='block';return}
+      document.getElementById('scrim').classList.remove('on')})};
+  setTimeout(function(){document.getElementById('au_e').focus()},60)}
 </script>
 <script type="module">
 /* loads the Supabase client; if it fails the app still runs on device storage */
