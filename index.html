@@ -96,6 +96,15 @@ display:flex;align-items:center;gap:10px;min-height:48px}
 background:var(--card);color:var(--ink);min-height:48px}
 .fl input:focus{outline:2px solid var(--tealM);outline-offset:1px;border-color:transparent}
 .f3{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.up{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.uph{font-size:11.5px;color:var(--muted);margin:8px 0 13px;line-height:1.45}
+.spin{width:26px;height:26px;border:2.5px solid var(--line);border-top-color:var(--teal);
+border-radius:50%;margin:0 auto;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.cf{max-height:52vh;overflow-y:auto;margin:0 -2px;padding:0 2px}
+.cf .fl{margin-bottom:9px}
+.cf .fl label{display:flex;justify-content:space-between;align-items:baseline}
+.cf .fl label em{font-style:normal;text-transform:none;letter-spacing:0;color:var(--tealM);font-size:10px}
 .btn{border:none;background:var(--teal);color:#fff;border-radius:12px;padding:13px 18px;font:600 14.5px 'Inter';
 display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;cursor:pointer}
 .btn.gh{background:var(--card);color:var(--ink2);border:1px solid var(--line)}
@@ -144,7 +153,8 @@ font:inherit;color:inherit;cursor:pointer}
 .mk .n{font-size:11px;color:var(--ink2);font-weight:500;margin-top:6px;line-height:1.3;min-height:2.6em}
 .mk .v{font:600 20px 'Inter Tight';letter-spacing:-.03em;margin:3px 0}
 .mk .v s{font-size:10.5px;color:var(--muted);font-weight:500;text-decoration:none;margin-left:2px}
-.mini .v s{text-decoration:none;color:var(--muted);font-weight:500}
+.mini .v .u{font-size:12px;color:var(--muted);font-weight:500}
+.mk .v .u2{font-size:10.5px;color:var(--muted);font-weight:500;margin-left:2px}
 .rg{height:4px;border-radius:3px;background:#EFEEE8;overflow:hidden}
 .rg i{display:block;height:100%;border-radius:3px}
 
@@ -208,7 +218,7 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   </div>
 
   <div class="g2" style="margin-bottom:12px">
-    <div class="mini"><div class="k">Start</div><div class="v">83.0<s style="font-size:12px"> kg</s></div><div class="d">13 Sep</div></div>
+    <div class="mini"><div class="k">Start</div><div class="v">83.0<span class="u"> kg</span></div><div class="d">13 Sep</div></div>
     <div class="mini"><div class="k">Latest</div><div class="v" id="mLat">—</div><div class="d" id="mLatD">not logged</div></div>
     <div class="mini"><div class="k">Plan says</div><div class="v" id="mPlan">83.0</div><div class="d" id="mWk">week 0</div></div>
     <div class="mini"><div class="k">To go</div><div class="v" id="mTogo">9.5</div><div class="d">kg to 72</div></div>
@@ -277,33 +287,40 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   <p class="sub">Weight alone gives you a verdict. Add scan or blood values for a full comparison.</p>
 
   <div class="card">
+    <div class="up">
+      <button class="btn gh sm" type="button" id="upScan"><span data-ic="scale"></span>Photo of scan</button>
+      <button class="btn gh sm" type="button" id="upBlood"><span data-ic="flask"></span>Blood report</button>
+      <input type="file" id="fScan" accept="image/*" hidden>
+      <input type="file" id="fBlood" accept="application/pdf,image/*" hidden>
+    </div>
+    <p class="uph">Reads the numbers in for you. You check them before anything saves.</p>
     <div class="f3">
       <div class="fl"><label for="dI">Date</label><input type="date" id="dI"></div>
-      <div class="fl"><label for="kgI">Weight (7-day avg)</label><input type="number" inputmode="decimal" step="0.1" id="kgI" placeholder="kg"></div>
+      <div class="fl"><label for="kgI">Weight (7-day avg)</label><input type="number" inputmode="decimal" step="0.1" id="kgI" min="30" max="250" placeholder="kg"></div>
     </div>
 
     <div class="acc"><button class="ah" type="button"><span data-ic="scale"></span>Body scan<span data-ic="chev"></span></button>
       <div class="ab"><div class="f3">
-        <div class="fl"><label for="bfI">Body fat %</label><input type="number" inputmode="decimal" step="0.1" id="bfI"></div>
-        <div class="fl"><label for="mmI">Muscle kg</label><input type="number" inputmode="decimal" step="0.05" id="mmI"></div>
-        <div class="fl"><label for="vfI">Visceral</label><input type="number" inputmode="decimal" step="0.5" id="vfI"></div>
-        <div class="fl"><label for="waI">Waist (in)</label><input type="number" inputmode="decimal" step="0.1" id="waI"></div>
+        <div class="fl"><label for="bfI">Body fat %</label><input type="number" inputmode="decimal" step="0.1" id="bfI" min="3" max="70"></div>
+        <div class="fl"><label for="mmI">Muscle kg</label><input type="number" inputmode="decimal" step="0.05" id="mmI" min="10" max="120"></div>
+        <div class="fl"><label for="vfI">Visceral</label><input type="number" inputmode="decimal" step="0.5" id="vfI" min="1" max="30"></div>
+        <div class="fl"><label for="waI">Waist (in)</label><input type="number" inputmode="decimal" step="0.1" id="waI" min="20" max="70"></div>
       </div></div></div>
 
     <div class="acc"><button class="ah" type="button"><span data-ic="flask"></span>Blood panel<span data-ic="chev"></span></button>
       <div class="ab"><div class="f3">
-        <div class="fl"><label for="b_ins">Insulin</label><input type="number" inputmode="decimal" step="0.1" id="b_ins"></div>
-        <div class="fl"><label for="b_glu">Glucose</label><input type="number" inputmode="decimal" id="b_glu"></div>
-        <div class="fl"><label for="b_a1c">HbA1c</label><input type="number" inputmode="decimal" step="0.1" id="b_a1c"></div>
-        <div class="fl"><label for="b_ldl">LDL</label><input type="number" inputmode="decimal" id="b_ldl"></div>
-        <div class="fl"><label for="b_nhd">Non-HDL</label><input type="number" inputmode="decimal" id="b_nhd"></div>
-        <div class="fl"><label for="b_hdl">HDL</label><input type="number" inputmode="decimal" id="b_hdl"></div>
-        <div class="fl"><label for="b_tg">Triglycerides</label><input type="number" inputmode="decimal" id="b_tg"></div>
-        <div class="fl"><label for="b_apo">ApoB</label><input type="number" inputmode="decimal" id="b_apo"></div>
-        <div class="fl"><label for="b_crp">hsCRP</label><input type="number" inputmode="decimal" step="0.01" id="b_crp"></div>
-        <div class="fl"><label for="b_vd">Vitamin D</label><input type="number" inputmode="decimal" step="0.1" id="b_vd"></div>
-        <div class="fl"><label for="b_b12">B12</label><input type="number" inputmode="decimal" id="b_b12"></div>
-        <div class="fl"><label for="b_hcy">Homocysteine</label><input type="number" inputmode="decimal" step="0.1" id="b_hcy"></div>
+        <div class="fl"><label for="b_ins">Insulin</label><input type="number" inputmode="decimal" step="0.1" id="b_ins" min="0" max="300"></div>
+        <div class="fl"><label for="b_glu">Glucose</label><input type="number" inputmode="decimal" id="b_glu" min="20" max="600"></div>
+        <div class="fl"><label for="b_a1c">HbA1c</label><input type="number" inputmode="decimal" step="0.1" id="b_a1c" min="3" max="20"></div>
+        <div class="fl"><label for="b_ldl">LDL</label><input type="number" inputmode="decimal" id="b_ldl" min="10" max="400"></div>
+        <div class="fl"><label for="b_nhd">Non-HDL</label><input type="number" inputmode="decimal" id="b_nhd" min="10" max="500"></div>
+        <div class="fl"><label for="b_hdl">HDL</label><input type="number" inputmode="decimal" id="b_hdl" min="5" max="150"></div>
+        <div class="fl"><label for="b_tg">Triglycerides</label><input type="number" inputmode="decimal" id="b_tg" min="10" max="2000"></div>
+        <div class="fl"><label for="b_apo">ApoB</label><input type="number" inputmode="decimal" id="b_apo" min="10" max="300"></div>
+        <div class="fl"><label for="b_crp">hsCRP</label><input type="number" inputmode="decimal" step="0.01" id="b_crp" min="0" max="200"></div>
+        <div class="fl"><label for="b_vd">Vitamin D</label><input type="number" inputmode="decimal" step="0.1" id="b_vd" min="1" max="200"></div>
+        <div class="fl"><label for="b_b12">B12</label><input type="number" inputmode="decimal" id="b_b12" min="50" max="3000"></div>
+        <div class="fl"><label for="b_hcy">Homocysteine</label><input type="number" inputmode="decimal" step="0.1" id="b_hcy" min="1" max="100"></div>
       </div></div></div>
 
     <button class="btn" id="go" style="margin-top:12px"><span data-ic="check"></span>Check progress</button>
@@ -404,6 +421,13 @@ paint();
 
 /* ===== constants ===== */
 var DAY0=new Date(2026,8,13);
+/* Date-only strings parse as UTC midnight while DAY0 is local midnight, which
+   skews every week number by the timezone offset. Parse and format locally. */
+function pd(v){if(v instanceof Date)return v;var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
+  return m?new Date(+m[1],+m[2]-1,+m[3]):new Date(v)}
+function isoToday(){var d=new Date(),z=function(n){return(n<10?'0':'')+n};
+  return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
+function validDate(v){var d=pd(v);return d instanceof Date&&!isNaN(d)}
 var BASE=[
 {d:'18 Oct 25',t:'10:42',iso:'2025-10-18',w:77.45,bf:22.30,mm:57.05,vf:9.5,bmi:25.1,mq:71,fat:17.3},
 {d:'27 Dec 25',t:'16:37',iso:'2025-12-27',w:76.40,bf:20.80,mm:57.40,vf:9.0,bmi:24.8,mq:76,fat:15.9},
@@ -425,15 +449,17 @@ var SB_URL='https://kbevrnrmlwaipdrmpwwu.supabase.co';
 var SB_KEY='sb_publishable_KS0hSa-qC_JZv1pah575Ig_wlkCcMI2';
 var SB=null;
 var LKEY='shivam-health-v1',CLOUD=false,USER=null;
+var OWNER=null,GONE=[];
 function lsGet(){try{var r=localStorage.getItem(LKEY);if(!r)return null;
-  var d=JSON.parse(r);return Array.isArray(d.log)?d.log:null}catch(e){return null}}
-function lsPut(l){try{localStorage.setItem(LKEY,JSON.stringify({v:2,log:l,at:Date.now()}));return 1}
-  catch(e){return 0}}
-function refresh(){renderLog();draw();today()}
+  var d=JSON.parse(r);if(!Array.isArray(d.log))return null;
+  OWNER=d.uid||null;GONE=Array.isArray(d.gone)?d.gone:[];return d.log}catch(e){return null}}
+function lsPut(l){try{localStorage.setItem(LKEY,JSON.stringify(
+    {v:3,uid:OWNER,log:l,gone:GONE,at:Date.now()}));return 1}catch(e){return 0}}
+function refresh(){renderLog();draw();today();if(window.scanTable)scanTable()}
 function sync(t,k){var d=document.getElementById('syncdot'),x=document.getElementById('synctxt');
   if(!d)return;d.style.background=k==='ok'?'var(--green)':k==='warn'?'var(--amber)':'var(--muted)';
   x.textContent=t}
-function persist(){LOG.sort(function(a,b){return new Date(a.date)-new Date(b.date)});
+function persist(){LOG.sort(function(a,b){return pd(a.date)-pd(b.date)});
   var ok=lsPut(LOG);
   sync(CLOUD?'Synced to cloud':ok?'Saved on this device':'Storage blocked \u2014 use Save file',
        CLOUD?'ok':ok?'ok':'warn');
@@ -443,46 +469,77 @@ function persist(){LOG.sort(function(a,b){return new Date(a.date)-new Date(b.dat
 var COL={w:'weight_kg',bf:'body_fat_pct',mm:'muscle_kg',vf:'visceral',wa:'waist_in',
 homa:'homa_ir',b_ins:'insulin',b_glu:'glucose',b_a1c:'hba1c',b_ldl:'ldl',b_nhd:'non_hdl',
 b_hdl:'hdl',b_tg:'triglycerides',b_apo:'apob',b_crp:'hscrp',b_vd:'vitamin_d',
-b_b12:'b12',b_hcy:'homocysteine'};
+b_b12:'b12',b_hcy:'homocysteine',
+/* read from a report but absent from the manual form */
+lab:'lab',bmr:'bmr',muscle_quality:'muscle_quality',lpa:'lpa',folate:'folate',
+tsh:'tsh',alt:'alt',ast:'ast',ferritin:'ferritin',haemoglobin:'haemoglobin',
+egfr:'egfr',testosterone:'testosterone'};
+/* markers the table has no column for: kept whole rather than dropped */
+var SIDE=['total_cholesterol','apoa1','alp','ggt','uric_acid','tlc','creatinine'];
 function toRow(e){var r={taken_on:e.date,week:e.wk==null?null:e.wk,source:'manual',user_id:USER.id};
   for(var k in COL)if(e[k]!=null)r[COL[k]]=e[k];
   if(e.w!=null)r.bmi=+(e.w/3.0976).toFixed(1);
+  else if(e.bmi!=null)r.bmi=e.bmi;
+  var side={};SIDE.forEach(function(k){if(e[k]!=null)side[k]=e[k]});
+  if(Object.keys(side).length)r.extracted=side;
   return r}
 function toEntry(r){var e={date:r.taken_on,wk:r.week==null?null:+r.week};
-  for(var k in COL)if(r[COL[k]]!=null)e[k]=+r[COL[k]];
+  for(var k in COL){var v=r[COL[k]];if(v!=null)e[k]=(k==='lab')?v:+v}
+  if(r.extracted&&typeof r.extracted==='object')
+    SIDE.forEach(function(k){if(r.extracted[k]!=null)e[k]=r.extracted[k]});
   return e}
 function authUI(){var b=document.getElementById('authbtn');if(!b)return;
   b.textContent=USER?'Sign out':'Sign in to sync';b.style.display=SB?'':'none'}
 function cloudInit(c){SB=c;
-  c.auth.getSession().then(function(x){onAuth(x.data.session)});
+  c.auth.getSession().then(function(x){onAuth(x.data.session)})
+   .catch(function(){CLOUD=false;sync('Cloud unreachable \u2014 using this device','warn');authUI()});
   c.auth.onAuthStateChange(function(ev,ss){
     if(ev==='PASSWORD_RECOVERY'){USER=(ss&&ss.user)||null;authUI();openNewPw();return}
     onAuth(ss)})}
 var ASKED=false;
 function onAuth(ss){USER=(ss&&ss.user)||null;
   if(USER){CLOUD=true;sync('Syncing\u2026','warn');cloudPull()}
-  else{CLOUD=false;sync('Not signed in \u2014 saved on this device','warn');
+  else{CLOUD=false;ASKED&&lsPut(LOG);
+    sync('Not signed in \u2014 saved on this device','warn');
     if(!ASKED){ASKED=true;openAuth()}}
   authUI()}
 function cloudPull(){
-  SB.from('measurements').select('*').order('taken_on').then(function(x){
+  /* A different account signed in on this device: its rows are not ours. */
+  if(OWNER&&OWNER!==USER.id){LOG=[];GONE=[]}
+  OWNER=USER.id;
+  var pending=GONE.slice();
+  var step=pending.length?Promise.all(pending.map(function(d){
+      return SB.from('measurements').delete().eq('taken_on',d)})):Promise.resolve();
+  step.then(function(){GONE=[];
+    return SB.from('measurements').select('*').order('taken_on')}).then(function(x){
     if(x.error){CLOUD=false;sync('Cloud unreachable \u2014 using this device','warn');return}
     var rows=x.data.map(toEntry),have={};
     rows.forEach(function(e){have[e.date]=1});
-    var onlyHere=LOG.filter(function(e){return !have[e.date]});
-    LOG=rows.concat(onlyHere);
-    LOG.sort(function(a,b){return new Date(a.date)-new Date(b.date)});
+    /* Only rows never yet sent are kept. Anything else absent from the cloud
+       was deleted elsewhere, so re-pushing it would resurrect it. */
+    var unsent=LOG.filter(function(e){return e._new&&!have[e.date]});
+    LOG=rows.concat(unsent);
+    LOG.sort(function(a,b){return pd(a.date)-pd(b.date)});
     lsPut(LOG);refresh();
-    if(onlyHere.length)cloudPush(onlyHere);else sync('Synced to cloud','ok')})}
+    if(unsent.length)cloudPush(unsent);else sync('Synced to cloud','ok')})
+   .catch(function(){CLOUD=false;sync('Cloud unreachable \u2014 using this device','warn')})}
 function cloudPush(list){
   if(!CLOUD||!USER||!SB)return;
-  var rows=(list||LOG).map(toRow);if(!rows.length)return;
+  var src=list||LOG,rows=src.map(toRow);if(!rows.length)return;
   SB.from('measurements').upsert(rows,{onConflict:'user_id,taken_on'}).then(function(x){
-    if(x.error){sync('Cloud save failed \u2014 saved on this device','warn')}
-    else sync('Synced to cloud','ok')})}
-function cloudDelete(d){if(!CLOUD||!USER||!SB)return;
+    if(x.error){sync('Cloud save failed \u2014 saved on this device','warn');return}
+    src.forEach(function(e){delete e._new});lsPut(LOG);
+    sync('Synced to cloud','ok')})
+   .catch(function(){sync('Cloud save failed \u2014 saved on this device','warn')})}
+function cloudDelete(d){
+  /* Remember the deletion until the cloud has actually accepted it, or the
+     row comes back on the next sync. */
+  if(GONE.indexOf(d)<0)GONE.push(d);
+  if(!CLOUD||!USER||!SB)return;
   SB.from('measurements').delete().eq('taken_on',d).then(function(x){
-    if(x.error)sync('Cloud delete failed','warn')})}
+    if(x.error){sync('Cloud delete failed','warn');return}
+    GONE=GONE.filter(function(g){return g!==d});lsPut(LOG)})
+   .catch(function(){sync('Cloud delete failed','warn')})}
 var SEED=[{date:'2026-09-13',wk:0,w:83,bf:23.1,mm:60.5,vf:11}];
 (function(){var l=lsGet();LOG=l||SEED.slice();if(!l)lsPut(LOG)})();
 function wkNow(){return Math.max(0,Math.round((new Date()-DAY0)/(7*864e5)*10)/10)}
@@ -505,8 +562,8 @@ function today(){
   document.getElementById('mPlan').textContent=pl.w.toFixed(1);
   document.getElementById('mWk').textContent='week '+wk;
   var last=LOG.filter(function(e){return e.w}).slice(-1)[0];
-  if(last){document.getElementById('mLat').innerHTML=last.w.toFixed(1)+'<s style="font-size:12px"> kg</s>';
-    document.getElementById('mLatD').textContent=new Date(last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  if(last){document.getElementById('mLat').innerHTML=last.w.toFixed(1)+'<span class="u"> kg</span>';
+    document.getElementById('mLatD').textContent=pd(last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
     document.getElementById('mTogo').textContent=(last.w-72).toFixed(1)}
   for(var i=0;i<PHASE.length;i++){if(wk<=PHASE[i].to){
     document.getElementById('actH').textContent=PHASE[i].h;
@@ -540,7 +597,10 @@ ST.forEach(function(s,i){var e=document.createElement('div');
   e.className='step'+(s[2]?' fest':'')+(i===0?' open':'');
   e.innerHTML='<button class="sh" type="button"><span class="sw2">'+s[0]+'</span><span class="st">'+s[1]+'</span>'+ic('chev')+'</button>'+
     '<div class="sb">'+s[3].map(function(r){return '<div>'+r+'</div>'}).join('')+'</div>';
-  e.querySelector('.sh').onclick=function(){e.classList.toggle('open')};t.appendChild(e)})})();
+  var sh=e.querySelector('.sh');
+  sh.setAttribute('aria-expanded',e.classList.contains('open')?'true':'false');
+  sh.onclick=function(){var o=e.classList.toggle('open');
+    sh.setAttribute('aria-expanded',o?'true':'false')};t.appendChild(e)})})();
 
 /* ===== chart ===== */
 var SER=[{k:'w',n:'Weight',c:'#14605A',on:1},{k:'fat',n:'Fat mass',c:'#A8452F',on:1},
@@ -549,12 +609,13 @@ function scans(){
   var by={},k;
   BASE.forEach(function(p){by[p.iso]=p});
   LOG.forEach(function(e){
-    if(e.w==null)return;
-    var was=by[e.date]||{},d=new Date(e.date);
+    if(e.w==null&&e.bf==null&&e.mm==null&&e.vf==null&&e.wa==null)return;
+    var was=by[e.date]||{},d=pd(e.date);
     by[e.date]={iso:e.date,d:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}),
-      t:was.t||'logged',w:e.w,bf:e.bf!=null?e.bf:null,mm:e.mm!=null?e.mm:null,
-      vf:e.vf!=null?e.vf:null,bmi:+(e.w/3.0976).toFixed(1),mq:was.mq||null,
-      fat:e.bf!=null?+(e.w*e.bf/100).toFixed(1):null,mine:1}});
+      t:was.t||'logged',w:e.w!=null?e.w:null,bf:e.bf!=null?e.bf:null,mm:e.mm!=null?e.mm:null,
+      vf:e.vf!=null?e.vf:null,wa:e.wa!=null?e.wa:null,
+      bmi:e.w!=null?+(e.w/3.0976).toFixed(1):null,mq:was.mq||null,
+      fat:(e.w!=null&&e.bf!=null)?+(e.w*e.bf/100).toFixed(1):null,mine:1}});
   return Object.keys(by).sort().map(function(x){return by[x]})}
 var tip=document.getElementById('tip');
 function tShow(e,h){tip.innerHTML=h;tip.style.opacity=1;var x=e.clientX+12,y=e.clientY-10;
@@ -583,9 +644,11 @@ function draw(){
     s+='<rect x="'+(X(i)-15)+'" y="'+T+'" width="30" height="'+(H-T-B)+'" fill="transparent" data-i="'+i+'"/>'});
   document.getElementById('chart').innerHTML=s+'</svg>';
   document.querySelectorAll('#chart rect[data-i]').forEach(function(c){
-    function o(e){var p=scans()[+c.dataset.i],h='<b>'+p.d+'</b><br>'+p.w+' kg · BMI '+p.bmi;
-      if(p.bf)h+='<br>Fat '+p.bf+'% ('+p.fat+' kg)';if(p.mm)h+='<br>Muscle '+p.mm+' kg';
-      if(p.vf)h+='<br>Visceral '+p.vf;tShow(e,h)}
+    function o(e){var p=scans()[+c.dataset.i],h='<b>'+p.d+'</b>';
+      if(p.w!=null)h+='<br>'+p.w+' kg'+(p.bmi!=null?' \u00b7 BMI '+p.bmi:'');
+      if(p.bf!=null)h+='<br>Fat '+p.bf+'%'+(p.fat!=null?' ('+p.fat+' kg)':'');
+      if(p.mm!=null)h+='<br>Muscle '+p.mm+' kg';
+      if(p.vf!=null)h+='<br>Visceral '+p.vf;tShow(e,h)}
     c.addEventListener('mouseenter',o);c.addEventListener('mousemove',o);
     c.addEventListener('mouseleave',tHide);
     c.addEventListener('click',function(e){o(e);setTimeout(tHide,3000)})});
@@ -598,9 +661,13 @@ SER.forEach(function(s){var b=document.createElement('button');b.type='button';b
 var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,180)});
 
 /* ===== scan table ===== */
-(function(){var h='<tr><th>Date</th><th>Weight</th><th>Fat %</th><th>Fat kg</th><th>Muscle</th><th>Visc.</th><th>BMI</th></tr>';
-BASE.forEach(function(p){h+='<tr><td>'+p.d+'</td><td>'+p.w+'</td><td>'+p.bf+'</td><td>'+p.fat+'</td><td>'+p.mm+'</td><td>'+p.vf+'</td><td>'+p.bmi+'</td></tr>'});
-document.getElementById('scant').innerHTML=h})();
+function scanTable(){
+  var d=function(v){return v==null?'\u2014':v};
+  var h='<tr><th>Date</th><th>Weight</th><th>Fat %</th><th>Fat kg</th><th>Muscle</th><th>Visc.</th><th>BMI</th></tr>';
+  scans().forEach(function(p){h+='<tr><td>'+p.d+'</td><td>'+d(p.w)+'</td><td>'+d(p.bf)+'</td><td>'+
+    d(p.fat)+'</td><td>'+d(p.mm)+'</td><td>'+d(p.vf)+'</td><td>'+d(p.bmi)+'</td></tr>'});
+  document.getElementById('scant').innerHTML=h}
+scanTable();
 
 /* ===== biomarkers ===== */
 var M=[
@@ -633,7 +700,7 @@ function marks(f){var b=document.getElementById('bm');b.innerHTML='';
 M.filter(function(m){return f==='all'||m[3]===f}).forEach(function(m){
   var e=document.createElement('button');e.className='mk';e.type='button';
   e.innerHTML='<span class="tag '+TG[m[3]]+'">'+LB[m[3]]+'</span><div class="n">'+m[0]+'</div>'+
-    '<div class="v">'+m[1]+'<s>'+m[2]+'</s></div><div class="rg"><i style="width:'+(m[4]||3)+'%;background:'+CL[m[3]]+'"></i></div>';
+    '<div class="v">'+m[1]+'<span class="u2">'+m[2]+'</span></div><div class="rg"><i style="width:'+(m[4]||3)+'%;background:'+CL[m[3]]+'"></i></div>';
   e.onclick=function(){
     document.getElementById('mb').innerHTML='<span class="tag '+TG[m[3]]+'">'+LB[m[3]]+'</span>'+
       '<h3 style="margin-top:9px;font-size:20px">'+m[0]+'</h3>'+
@@ -644,15 +711,128 @@ M.filter(function(m){return f==='all'||m[3]===f}).forEach(function(m){
       '<div class="kv"><span>20 Jun 2026</span><span>'+m[7]+'</span></div>'+
       '<div class="kv"><span>Target</span><span>'+m[5]+'</span></div>'+
       '<div class="note"><b>Do:</b> '+m[9]+'</div>';
-    document.getElementById('scrim').classList.add('on')};
+    sheetOpen()};
   b.appendChild(e)})}
 marks('all');
 document.querySelectorAll('#chips .chip').forEach(function(c){c.onclick=function(){
   document.querySelectorAll('#chips .chip').forEach(function(z){z.classList.remove('on')});
   c.classList.add('on');marks(c.dataset.f)}});
-document.getElementById('mx').onclick=function(){document.getElementById('scrim').classList.remove('on')};
-document.getElementById('scrim').onclick=function(e){if(e.target===this)this.classList.remove('on')};
-addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('scrim').classList.remove('on')});
+var SCRIM=document.getElementById('scrim'),RETURN_TO=null;
+function sheetOpen(){RETURN_TO=document.activeElement;SCRIM.classList.add('on')}
+function sheetClose(){SCRIM.classList.remove('on');
+  if(RETURN_TO&&RETURN_TO.focus)try{RETURN_TO.focus()}catch(e){}
+  RETURN_TO=null}
+document.getElementById('mx').onclick=sheetClose;
+SCRIM.onclick=function(e){if(e.target===this)sheetClose()};
+addEventListener('keydown',function(e){
+  if(!SCRIM.classList.contains('on'))return;
+  if(e.key==='Escape'){sheetClose();return}
+  if(e.key!=='Tab')return;
+  var f=SCRIM.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+  f=Array.prototype.filter.call(f,function(el){return !el.disabled&&el.offsetParent!==null});
+  if(!f.length)return;
+  var first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}});
+
+/* ===== reading a photo or report ===== */
+/* Gemini only reads. Nothing here calculates, and nothing is written to the
+   log until the confirmation sheet is accepted. */
+var MAP={
+  scan:{taken_on:['Date','date'],weight_kg:['Weight (kg)','kgI'],
+    body_fat_pct:['Body fat %','bfI'],muscle_kg:['Muscle (kg)','mmI'],
+    visceral:['Visceral','vfI'],bmi:['BMI',null],bmr:['BMR',null],
+    muscle_quality:['Muscle quality',null]},
+  blood:{taken_on:['Date','date'],lab:['Laboratory',null],
+    insulin:['Insulin','b_ins'],glucose:['Fasting glucose','b_glu'],
+    hba1c:['HbA1c','b_a1c'],ldl:['LDL','b_ldl'],non_hdl:['Non-HDL','b_nhd'],
+    hdl:['HDL','b_hdl'],triglycerides:['Triglycerides','b_tg'],
+    apob:['ApoB','b_apo'],hscrp:['hsCRP','b_crp'],vitamin_d:['Vitamin D','b_vd'],
+    b12:['Vitamin B12','b_b12'],homocysteine:['Homocysteine','b_hcy'],
+    lpa:['Lp(a)',null],folate:['Folate',null],tsh:['TSH',null],alt:['ALT',null],
+    ast:['AST',null],ferritin:['Ferritin',null],haemoglobin:['Haemoglobin',null],
+    egfr:['eGFR',null],testosterone:['Testosterone',null],
+    total_cholesterol:['Total cholesterol',null],apoa1:['ApoA1',null],
+    alp:['ALP',null],ggt:['GGT',null],uric_acid:['Uric acid',null],
+    tlc:['TLC',null],creatinine:['Creatinine',null]}};
+var EXTRA={};
+
+function busy(t){
+  document.getElementById('mb').innerHTML=
+    '<div style="text-align:center;padding:26px 10px">'+
+    '<div class="spin"></div>'+
+    '<div style="font:600 15px \'Inter\';margin-top:14px">'+t+'</div>'+
+    '<p style="font-size:12.5px;color:var(--muted);margin:6px 0 0">This takes a few seconds.</p></div>';
+  sheetOpen()}
+
+function readFile(f){return new Promise(function(res,rej){
+  var r=new FileReader();
+  r.onload=function(){var x=String(r.result);res(x.slice(x.indexOf(',')+1))};
+  r.onerror=function(){rej(new Error('Could not read that file.'))};
+  r.readAsDataURL(f)})}
+
+function extract(kind,f){
+  if(!SB||!USER){alert('Sign in first, then the reader can be used.');return}
+  if(f.size>6*1024*1024){alert('That file is over 6 MB. Take a smaller photo.');return}
+  busy(kind==='scan'?'Reading your scan\u2026':'Reading your report\u2026');
+  readFile(f).then(function(b64){
+    return SB.functions.invoke('extract',{body:{kind:kind,mime:f.type||'image/jpeg',data:b64}})
+  }).then(function(r){
+    var d=r.data,e=r.error;
+    if(e||!d||d.error){
+      var msg=(d&&d.message)||'The reader is unavailable. Type the values in by hand.';
+      sheetClose();alert(msg);return}
+    var got=Object.keys(d.fields||{});
+    if(!got.length){sheetClose();
+      alert('No values could be read from that file. Type them in by hand.');return}
+    confirmSheet(kind,d.fields);
+  }).catch(function(){sheetClose();
+    alert('The reader could not be reached. Type the values in by hand.')})}
+
+function confirmSheet(kind,fields){
+  var m=MAP[kind],rows='';
+  Object.keys(m).forEach(function(k){
+    if(!(k in fields))return;
+    var lab=m[k][0],v=fields[k],
+        t=(k==='taken_on')?'date':(k==='lab'?'text':'number');
+    rows+='<div class="fl"><label for="cf_'+k+'">'+lab+
+      (m[k][1]?'':' <em>stored only</em>')+'</label>'+
+      '<input id="cf_'+k+'" type="'+t+'" '+(t==='number'?'inputmode="decimal" step="any" ':'')+
+      'value="'+String(v).replace(/"/g,'&quot;')+'"></div>'});
+  document.getElementById('mb').innerHTML=
+    '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Check these numbers</div>'+
+    '<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5">'+
+    'Read from your '+(kind==='scan'?'scan':'report')+'. Correct anything wrong. '+
+    'Nothing is saved until you tap Use these.</p>'+
+    '<div class="cf">'+rows+'</div>'+
+    '<button class="btn" type="button" id="cf_ok" style="margin-top:12px">Use these</button>'+
+    '<button type="button" id="cf_no" style="width:100%;margin-top:8px;border:none;background:none;'+
+    'color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Discard</button>';
+  sheetOpen();
+  document.getElementById('cf_no').onclick=sheetClose;
+  document.getElementById('cf_ok').onclick=function(){
+    var used=0;
+    Object.keys(m).forEach(function(k){
+      var el=document.getElementById('cf_'+k);if(!el)return;
+      var raw=el.value.trim();if(!raw)return;
+      if(k==='taken_on'){if(validDate(raw)){document.getElementById('dI').value=raw;used++}return}
+      if(k==='lab'){EXTRA.lab=raw;used++;return}
+      var n=parseFloat(raw);if(isNaN(n))return;
+      var target=m[k][1];
+      if(target){document.getElementById(target).value=n}else{EXTRA[k]=n}
+      used++});
+    sheetClose();
+    document.querySelectorAll('.acc').forEach(function(a){a.classList.add('open');
+      var h=a.querySelector('.ah');if(h)h.setAttribute('aria-expanded','true')});
+    document.getElementById('go').scrollIntoView({behavior:'smooth',block:'center'});
+    sync(used+' values filled in \u2014 check, then tap Check progress','warn')}}
+
+['Scan','Blood'].forEach(function(kind){
+  var lower=kind.toLowerCase();
+  document.getElementById('up'+kind).onclick=function(){document.getElementById('f'+kind).click()};
+  document.getElementById('f'+kind).onchange=function(ev){
+    var f=ev.target.files[0];ev.target.value='';
+    if(f)extract(lower==='scan'?'scan':'blood',f)}});
 
 /* ===== checker ===== */
 var BL=[['b_ins','Fasting insulin',10.9,8,'low'],['b_glu','Fasting glucose',85,99,'low'],['b_a1c','HbA1c',5.3,5.6,'low'],
@@ -661,17 +841,33 @@ var BL=[['b_ins','Fasting insulin',10.9,8,'low'],['b_glu','Fasting glucose',85,9
 ['b_vd','Vitamin D',21.4,30,'high'],['b_b12','Vitamin B12',214,400,'high'],['b_hcy','Homocysteine',18.7,15,'low']];
 var BD=[['bfI','bf','Body fat','%',23.1,'low'],['mmI','mm','Muscle','kg',60.5,'high'],
 ['vfI','vf','Visceral','',11,'low'],['waI','wa','Waist','in',36,'low']];
-function nv(i){var v=parseFloat(document.getElementById(i).value);return isNaN(v)?null:v}
+var BAD=[];
+function nv(i){var el=document.getElementById(i),v=parseFloat(el.value);
+  if(isNaN(v))return null;
+  var lo=parseFloat(el.min),hi=parseFloat(el.max);
+  if((!isNaN(lo)&&v<lo)||(!isNaN(hi)&&v>hi)){if(BAD.indexOf(el)<0)BAD.push(el);return null}
+  return v}
 function bg(t,k){var c=k==='good'?'var(--greenS);color:var(--green)':k==='bad'?'var(--redS);color:var(--red)':
   k==='mid'?'var(--amberS);color:var(--amber)':'#EEEDE7;color:var(--ink2)';
   return '<span class="t" style="background:'+c+'">'+t+'</span>'}
-document.getElementById('dI').value=new Date().toISOString().slice(0,10);
-document.querySelectorAll('.acc .ah').forEach(function(b){b.onclick=function(){b.parentElement.classList.toggle('open')}});
+document.getElementById('dI').value=isoToday();
+document.querySelectorAll('.acc .ah').forEach(function(b){
+  b.setAttribute('aria-expanded',b.parentElement.classList.contains('open')?'true':'false');
+  b.onclick=function(){var o=b.parentElement.classList.toggle('open');
+    b.setAttribute('aria-expanded',o?'true':'false')}});
 
 document.getElementById('go').onclick=function(){
   var dt=document.getElementById('dI').value,kg=nv('kgI');
-  if(!dt){alert('Pick a date.');return}
-  var wk=Math.max(0,Math.round((new Date(dt)-DAY0)/(7*864e5)*10)/10),rows='',en={date:dt,wk:wk};
+  if(!dt||!validDate(dt)){alert('Pick a date.');return}
+  /* check every field before anything is computed from it */
+  BAD=[];
+  document.querySelectorAll('#p-track input[type=number]').forEach(function(el){
+    el.style.borderColor='';nv(el.id)});
+  if(BAD.length){
+    BAD.forEach(function(el){el.style.borderColor='var(--red)'});
+    alert('Some values look out of range. Check the fields outlined in red.');
+    BAD[0].focus();return}
+  var wk=Math.max(0,Math.round((pd(dt)-DAY0)/(7*864e5)*10)/10),rows='',en={date:dt,wk:wk};
   var cls='ok',icn='check',hd='',tx='';
   if(kg!=null){en.w=kg;var ex=interp(wk).w,df=kg-ex;
     if(wk<1){icn='flag';hd='Baseline recorded';tx='Logged '+kg.toFixed(1)+' kg. This is your starting line — come back in two weeks.'}
@@ -704,7 +900,8 @@ document.getElementById('go').onclick=function(){
   document.getElementById('dl').innerHTML=rows||'<div class="empty">No values entered.</div>';
   document.getElementById('res').classList.add('on');
   if(Object.keys(en).length>2){
-    LOG=LOG.filter(function(r){return r.date!==en.date});LOG.push(en);persist()}
+    Object.keys(EXTRA).forEach(function(k){if(en[k]==null)en[k]=EXTRA[k]});EXTRA={};
+    en._new=true;LOG=LOG.filter(function(r){return r.date!==en.date});LOG.push(en);persist()}
 };
 
 /* ===== log ===== */
@@ -712,10 +909,10 @@ function renderLog(){var t=document.getElementById('logt'),e=document.getElement
   if(!LOG.length){t.innerHTML='';e.style.display='block';return}
   e.style.display='none';
   var h='<tr><th>Date</th><th>Wk</th><th>Wt</th><th>Fat%</th><th>Muscle</th><th>Visc</th><th>Waist</th><th>HOMA</th><th></th></tr>';
-  LOG.forEach(function(r,i){h+='<tr><td>'+new Date(r.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</td><td>'+r.wk+'</td>'+
+  LOG.forEach(function(r,i){h+='<tr><td>'+pd(r.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</td><td>'+(r.wk!=null?r.wk:'\u2014')+'</td>'+
     '<td>'+(r.w!=null?r.w:'—')+'</td><td>'+(r.bf!=null?r.bf:'—')+'</td><td>'+(r.mm!=null?r.mm:'—')+'</td>'+
     '<td>'+(r.vf!=null?r.vf:'—')+'</td><td>'+(r.wa!=null?r.wa:'—')+'</td><td>'+(r.homa!=null?r.homa:'—')+'</td>'+
-    '<td><button type="button" data-x="'+i+'" style="border:none;background:none;color:var(--muted);cursor:pointer;padding:3px">'+ic('x')+'</button></td></tr>'});
+    '<td><button type="button" aria-label="Delete this entry" data-x="'+i+'" style="border:none;background:none;color:var(--muted);cursor:pointer;padding:3px">'+ic('x')+'</button></td></tr>'});
   t.innerHTML=h;
   t.querySelectorAll('[data-x]').forEach(function(b){b.onclick=function(){if(!confirm('Delete this entry?'))return;
     var g=LOG.splice(+b.dataset.x,1)[0];cloudDelete(g.date);persist()}})}
@@ -724,11 +921,16 @@ renderLog();
 document.getElementById('save').onclick=function(){
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify({v:2,log:LOG},null,2)],{type:'application/json'}));
-  a.download='progress-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)};
+  a.download='progress-'+isoToday()+'.json';a.click();URL.revokeObjectURL(a.href)};
 document.getElementById('load').onclick=function(){document.getElementById('file').click()};
 document.getElementById('file').onchange=function(e){var f=e.target.files[0];if(!f)return;
   var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);
-    if(!Array.isArray(d.log))throw 0;LOG=d.log;persist();alert('Loaded '+LOG.length+' entries.')}
+    if(!Array.isArray(d.log))throw 0;
+    var good=d.log.filter(function(e){return e&&e.date&&validDate(e.date)}),
+        bad=d.log.length-good.length;
+    if(!good.length)throw 0;
+    LOG=good;persist();
+    alert('Loaded '+good.length+' entries.'+(bad?' Skipped '+bad+' without a usable date.':''))}
     catch(x){alert('Could not read that file.')}};r.readAsText(f);e.target.value=''};
 
 /* ===== tabs ===== */
@@ -740,7 +942,9 @@ document.querySelectorAll('#nav button').forEach(function(b){b.onclick=function(
 today();draw();paint();persist();
 document.getElementById('authbtn').onclick=function(){
   if(!SB){alert('Cloud is not loaded. Check your connection and reload.');return}
-  if(USER){if(confirm('Sign out? Your log stays on this device.'))SB.auth.signOut();return}
+  if(USER){if(confirm('Sign out? Your log stays on this device.'))
+      SB.auth.signOut().catch(function(){alert('Could not sign out. Check your connection.')});
+    return}
   openAuth()};
 function openNewPw(){
   document.getElementById('mb').innerHTML=
@@ -753,7 +957,7 @@ function openNewPw(){
     '<input id="np_b" type="password" autocomplete="new-password" required minlength="10"></div>'+
     '<div id="np_m" style="font-size:12.5px;color:var(--red);margin:0 0 11px;display:none"></div>'+
     '<button class="btn" type="submit" id="np_go">Save password</button></form>';
-  document.getElementById('scrim').classList.add('on');
+  sheetOpen();
   document.getElementById('npf').onsubmit=function(ev){ev.preventDefault();
     var a=document.getElementById('np_a').value,b=document.getElementById('np_b').value,
         m=document.getElementById('np_m'),g=document.getElementById('np_go');
@@ -765,7 +969,7 @@ function openNewPw(){
       g.disabled=false;g.textContent='Save password';
       if(x.error){m.style.display='block';m.textContent=x.error.message;return}
       history.replaceState(null,'',location.pathname);
-      document.getElementById('scrim').classList.remove('on');
+      sheetClose();
       alert('Password saved. Let your phone store it.')})};
   setTimeout(function(){document.getElementById('np_a').focus()},60)}
 function openAuth(){
@@ -783,7 +987,7 @@ function openAuth(){
     'color:var(--teal);font:600 13px \'Inter\';padding:4px;cursor:pointer">Forgot password?</button>'+
     '<button type="button" id="au_skip" style="width:100%;margin-top:2px;border:none;background:none;'+
     'color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Not now, use this device only</button>';
-  document.getElementById('scrim').classList.add('on');
+  sheetOpen();
   document.getElementById('authf').onsubmit=function(ev){ev.preventDefault();
     var e=document.getElementById('au_e').value.trim(),
         w=document.getElementById('au_p').value,
@@ -792,9 +996,9 @@ function openAuth(){
     SB.auth.signInWithPassword({email:e,password:w}).then(function(x){
       b.disabled=false;b.textContent='Sign in';
       if(x.error){m.textContent=x.error.message;m.style.display='block';return}
-      document.getElementById('scrim').classList.remove('on')})};
+      sheetClose()})};
   document.getElementById('au_skip').onclick=function(){
-    document.getElementById('scrim').classList.remove('on')};
+    sheetClose()};
   document.getElementById('au_fp').onclick=function(){
     var e=document.getElementById('au_e').value.trim(),m=document.getElementById('au_m');
     m.style.display='block';
@@ -809,9 +1013,15 @@ function openAuth(){
 <script type="module">
 /* loads the Supabase client; if it fails the app still runs on device storage */
 try{
-  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
-  window.cloudInit(createClient(window.SB_URL,window.SB_KEY));
-}catch(e){ console.warn('Cloud unavailable',e); }
+  const mod=await Promise.race([
+    import('https://esm.sh/@supabase/supabase-js@2.116.0?bundle&target=es2022'),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('cdn timeout')),12000))
+  ]);
+  window.cloudInit(mod.createClient(window.SB_URL,window.SB_KEY));
+}catch(e){
+  console.warn('Cloud unavailable',e);
+  window.sync&&window.sync('Offline \u2014 saved on this device','warn');
+}
 </script>
 </body>
 </html>
