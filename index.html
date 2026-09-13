@@ -454,7 +454,9 @@ function authUI(){var b=document.getElementById('authbtn');if(!b)return;
   b.textContent=USER?'Sign out':'Sign in to sync';b.style.display=SB?'':'none'}
 function cloudInit(c){SB=c;
   c.auth.getSession().then(function(x){onAuth(x.data.session)});
-  c.auth.onAuthStateChange(function(_,ss){onAuth(ss)})}
+  c.auth.onAuthStateChange(function(ev,ss){
+    if(ev==='PASSWORD_RECOVERY'){USER=(ss&&ss.user)||null;authUI();openNewPw();return}
+    onAuth(ss)})}
 var ASKED=false;
 function onAuth(ss){USER=(ss&&ss.user)||null;
   if(USER){CLOUD=true;sync('Syncing\u2026','warn');cloudPull()}
@@ -739,6 +741,32 @@ document.getElementById('authbtn').onclick=function(){
   if(!SB){alert('Cloud is not loaded. Check your connection and reload.');return}
   if(USER){if(confirm('Sign out? Your log stays on this device.'))SB.auth.signOut();return}
   openAuth()};
+function openNewPw(){
+  document.getElementById('mb').innerHTML=
+    '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Set a new password</div>'+
+    '<p style="font-size:13px;color:var(--muted);margin:0 0 15px;line-height:1.5">Use at least 10 characters.</p>'+
+    '<form id="npf">'+
+    '<div class="fl"><label for="np_a">New password</label>'+
+    '<input id="np_a" type="password" autocomplete="new-password" required minlength="10"></div>'+
+    '<div class="fl"><label for="np_b">Repeat it</label>'+
+    '<input id="np_b" type="password" autocomplete="new-password" required minlength="10"></div>'+
+    '<div id="np_m" style="font-size:12.5px;color:var(--red);margin:0 0 11px;display:none"></div>'+
+    '<button class="btn" type="submit" id="np_go">Save password</button></form>';
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('npf').onsubmit=function(ev){ev.preventDefault();
+    var a=document.getElementById('np_a').value,b=document.getElementById('np_b').value,
+        m=document.getElementById('np_m'),g=document.getElementById('np_go');
+    m.style.display='block';m.style.color='var(--red)';
+    if(a!==b){m.textContent='The two passwords do not match.';return}
+    if(a.length<10){m.textContent='Use at least 10 characters.';return}
+    m.style.display='none';g.disabled=true;g.textContent='Saving\u2026';
+    SB.auth.updateUser({password:a}).then(function(x){
+      g.disabled=false;g.textContent='Save password';
+      if(x.error){m.style.display='block';m.textContent=x.error.message;return}
+      history.replaceState(null,'',location.pathname);
+      document.getElementById('scrim').classList.remove('on');
+      alert('Password saved. Let your phone store it.')})};
+  setTimeout(function(){document.getElementById('np_a').focus()},60)}
 function openAuth(){
   document.getElementById('mb').innerHTML=
     '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Sign in</div>'+
@@ -750,7 +778,9 @@ function openAuth(){
     '<input id="au_p" name="password" type="password" autocomplete="current-password" required></div>'+
     '<div id="au_m" style="font-size:12.5px;color:var(--red);margin:0 0 11px;display:none"></div>'+
     '<button class="btn" type="submit" id="au_go">Sign in</button></form>'+
-    '<button type="button" id="au_skip" style="width:100%;margin-top:9px;border:none;background:none;'+
+    '<button type="button" id="au_fp" style="width:100%;margin-top:10px;border:none;background:none;'+
+    'color:var(--teal);font:600 13px \'Inter\';padding:4px;cursor:pointer">Forgot password?</button>'+
+    '<button type="button" id="au_skip" style="width:100%;margin-top:2px;border:none;background:none;'+
     'color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Not now, use this device only</button>';
   document.getElementById('scrim').classList.add('on');
   document.getElementById('authf').onsubmit=function(ev){ev.preventDefault();
@@ -764,6 +794,15 @@ function openAuth(){
       document.getElementById('scrim').classList.remove('on')})};
   document.getElementById('au_skip').onclick=function(){
     document.getElementById('scrim').classList.remove('on')};
+  document.getElementById('au_fp').onclick=function(){
+    var e=document.getElementById('au_e').value.trim(),m=document.getElementById('au_m');
+    m.style.display='block';
+    if(!e){m.style.color='var(--red)';m.textContent='Type your email address first, then tap Forgot password.';return}
+    m.style.color='var(--muted)';m.textContent='Sending\u2026';
+    SB.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname}).then(function(x){
+      if(x.error){m.style.color='var(--red)';m.textContent=x.error.message}
+      else{m.style.color='var(--green)';
+        m.textContent='Reset link sent to '+e+'. Open it on this device.'}})};
   setTimeout(function(){document.getElementById('au_e').focus()},60)}
 </script>
 <script type="module">
