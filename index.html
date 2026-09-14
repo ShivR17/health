@@ -7,7 +7,13 @@
 <title>Shivam Rathi — Health Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<meta http-equiv="Cache-Control" content="no-cache">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#14605A">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Health">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1009,6 +1015,13 @@ function openAuth(){
       else{m.style.color='var(--green)';
         m.textContent='Reset link sent to '+e+'. Open it on this device.'}})};
   setTimeout(function(){document.getElementById('au_e').focus()},60)}
+</script>
+<script>
+/* Installability and instant opening. Failure here must never break the app. */
+if('serviceWorker' in navigator){
+  addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').catch(function(e){
+      console.warn('service worker not registered',e)})})}
 </script>
 <script type="module">
 /* loads the Supabase client; if it fails the app still runs on device storage */
