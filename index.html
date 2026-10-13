@@ -412,7 +412,7 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
     <div class="eyebrow"><span data-ic="food"></span>Nutrition</div>
     <div class="sw" id="nSw"><button class="on" type="button" data-n="7">7 days</button><button type="button" data-n="30">30 days</button></div>
     <div id="nCh"></div>
-    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">Dashed line is the target. A grey dash means nothing was logged that day.</p>
+    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">Dashed line is the target for all three. Lines above it beat the target. A grey dash means nothing was logged.</p>
   </div>
 
   <div class="card" style="padding:12px">
@@ -610,7 +610,7 @@ function wkNow(){return Math.max(0,Math.round((new Date()-DAY0)/(7*864e5)*10)/10
 function cd(id,d,short){var n=Math.max(0,Math.ceil((d-new Date())/864e5));
   document.getElementById(id).innerHTML=short?n+' days':n+'<small>days to go</small>'}
 cd('cd1',new Date(2026,11,9));cd('cd2',new Date(2027,1,3),1);
-document.getElementById('day').textContent='Week '+wkNow();
+document.getElementById('day').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',day:'numeric',month:'short'})+' \u00b7 Week '+wkNow();
 
 var PHASE=[
 {to:2,h:'Weeks 1–2 · settle in',p:'Eat 1,950 kcal every day. 120 g protein, 25 g fibre. Lift 3×, cardio 1×, 9,000 steps. Weigh first thing in the morning, before food or water. Most of the early drop is water — that is fine. Hunger peaks now and passes.'},
@@ -1092,7 +1092,7 @@ function foodAuth(){
     SB.from('nutrition_settings').select('*').maybeSingle()
   ]).then(function(r){
     if(r[0].error)throw r[0].error;
-    MEALS=r[0].data||[];FROM=from;LOADED={};
+    MEALS=r[0].data||[];FROM=from;LOADED={};PULLED=Date.now();
     var s=r[1].data;
     if(s){['kcal','tdee','protein_g','fibre_g'].forEach(function(k){NT[k]=+s[k]});NT.avoid=s.avoid||''}
     mPut();foodAll()})
@@ -1139,30 +1139,36 @@ function logDay(){
 
 /* ----- Data: 7 or 30 day bars ----- */
 var NDAYS=7;
-function bars(vals,target,col,days,over){
-  var W=520,H=96,T=6,B=18,n=vals.length,bw=W/n,mx=target*1.3;
-  vals.forEach(function(v){if(v!=null&&v>mx)mx=v*1.05});
-  var Y=function(v){return T+(H-T-B)*(1-v/mx)},s='<svg class="ch" viewBox="0 0 '+W+' '+H+'">';
-  vals.forEach(function(v,i){var x=i*bw+bw*.18,w=bw*.64,base=H-B;
-    if(v==null)s+='<line x1="'+x+'" x2="'+(x+w)+'" y1="'+(base-1)+'" y2="'+(base-1)+'" stroke="#C9C7BE" stroke-width="2"><title>'+days[i]+': not logged</title></line>';
-    else s+='<rect x="'+x+'" y="'+Math.min(Y(v),base-2)+'" width="'+w+'" height="'+Math.max(2,base-Y(v))+'" rx="2" fill="'+
-      (over&&v>target?'#A8452F':col)+'"><title>'+days[i]+': '+fmt(v)+'</title></rect>';
-    if(n<=7||i%5===4||i===n-1)s+='<text class="ax" x="'+(x+w/2)+'" y="'+(H-4)+'" text-anchor="middle">'+(+days[i].slice(8))+'</text>'});
-  var ty=Y(target);
-  s+='<line x1="0" x2="'+W+'" y1="'+ty+'" y2="'+ty+'" stroke="var(--ink2)" stroke-width="1" stroke-dasharray="4 4"/>';
-  return s+'</svg>'}
+/* One chart: calorie bars, with protein and fibre as lines scaled so every
+   target sits on the same dashed line. Missing days are grey dashes. */
 function nChart(){var box=document.getElementById('nCh');
   if(!USER){box.innerHTML='<div class="empty">Sign in to see food trends.</div>';return}
   var end=ist(),days=[],i;for(i=NDAYS-1;i>=0;i--)days.push(addDays(end,-i));
-  var per=days.map(function(d){var L=dayOf(d);return L.length?sum(L):null}),
-      got=per.filter(function(p){return p}),h='';
-  [['kcal','Calories','kcal',NT.kcal,'#14605A',1],['protein_g','Protein','g',NT.protein_g,'#5A9A91'],
-   ['fibre_g','Fibre','g',NT.fibre_g,'#2E7D5B']].forEach(function(s){
-    var avg=got.length?got.reduce(function(a,p){return a+p[s[0]]},0)/got.length:null;
-    h+='<div class="mac" style="margin-top:12px"><div class="h"><span>'+s[1]+' <span style="color:var(--muted)">· target '+fmt(s[3])+' '+s[2]+
-      '</span></span><b>'+(avg==null?'—':'avg '+fmt(avg)+' '+s[2])+'</b></div>'+
-      bars(per.map(function(p){return p?p[s[0]]:null}),s[3],s[4],days,s[5])+'</div>'});
-  box.innerHTML=h+'<div class="ftot">Logged '+got.length+' of '+NDAYS+' days. Averages count logged days only.</div>'}
+  var per=days.map(function(d){var L=dayOf(d);return L.length?sum(L):null}),got=per.filter(function(p){return p});
+  var W=520,H=170,T=8,B=18,n=days.length,bw=W/n,base=H-B,K=NT.kcal,mx=K*1.3;
+  var sc={protein_g:K/NT.protein_g,fibre_g:K/NT.fibre_g};
+  per.forEach(function(p){if(p)[p.kcal,p.protein_g*sc.protein_g,p.fibre_g*sc.fibre_g].forEach(function(v){if(v>mx)mx=v*1.05})});
+  var Y=function(v){return T+(base-T)*(1-v/mx)},X=function(i){return i*bw+bw/2};
+  var s='<svg class="ch" viewBox="0 0 '+W+' '+H+'">';
+  per.forEach(function(p,i){var x=i*bw+bw*.2,w=bw*.6;
+    if(!p)s+='<line x1="'+x+'" x2="'+(x+w)+'" y1="'+(base-1)+'" y2="'+(base-1)+'" stroke="#C9C7BE" stroke-width="2"/>';
+    else s+='<rect x="'+x+'" y="'+Math.min(Y(p.kcal),base-2)+'" width="'+w+'" height="'+Math.max(2,base-Y(p.kcal))+'" rx="2" fill="'+
+      (p.kcal>K?'#E3B1A5':'#B9D3CF')+'"/>';
+    if(n<=7||i%5===4||i===n-1)s+='<text class="ax" x="'+X(i)+'" y="'+(H-4)+'" text-anchor="middle">'+(+days[i].slice(8))+'</text>'});
+  s+='<line x1="0" x2="'+W+'" y1="'+Y(K)+'" y2="'+Y(K)+'" stroke="var(--ink2)" stroke-width="1" stroke-dasharray="4 4"/>';
+  [['protein_g','#14605A'],['fibre_g','#B4702C']].forEach(function(l){var seg=[],c=[];
+    per.forEach(function(p,i){if(p)c.push(X(i)+' '+Y(p[l[0]]*sc[l[0]]));else if(c.length){seg.push(c);c=[]}});
+    if(c.length)seg.push(c);
+    seg.forEach(function(g){if(g.length>1)s+='<path d="M'+g.join(' L')+'" fill="none" stroke="'+l[1]+'" stroke-width="2.2" stroke-linejoin="round"/>';
+      g.forEach(function(pt){var q=pt.split(' ');s+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="3" fill="'+l[1]+'"/>'})})});
+  per.forEach(function(p,i){s+='<rect x="'+i*bw+'" y="0" width="'+bw+'" height="'+H+'" fill="transparent"><title>'+days[i]+': '+
+    (p?fmt(p.kcal)+' kcal · '+p.protein_g+' g protein · '+p.fibre_g+' g fibre':'not logged')+'</title></rect>'});
+  var avg=function(k){return got.length?got.reduce(function(a,p){return a+p[k]},0)/got.length:0},
+      key=function(c,t,bar){return '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><i style="display:block;width:'+
+        (bar?'10px;height:10px;border-radius:2px':'14px;height:3px;border-radius:2px')+';background:'+c+'"></i>'+t+'</span>'};
+  box.innerHTML='<div class="ftot" style="margin-top:8px">'+key('#B9D3CF','Calories',1)+key('#14605A','Protein')+key('#B4702C','Fibre')+'</div>'+s+'</svg>'+
+    '<div class="ftot">'+(got.length?'Average on logged days: '+fmt(avg('kcal'))+' kcal · '+fmt(avg('protein_g'))+' g protein · '+
+      fmt(avg('fibre_g'))+' g fibre. ':'')+'Logged '+got.length+' of '+NDAYS+' days.</div>'}
 
 function planT(){document.getElementById('kc').innerHTML=fmt(NT.kcal)+' <span>kcal every day</span>';
   document.getElementById('kTd').textContent='~'+fmt(NT.tdee)+' kcal';
@@ -1206,7 +1212,7 @@ function mealSheet(m,isNew,warn){
   var h='<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">'+(isNew?'Check this meal':'Edit meal')+'</div>'+
     '<p style="font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5">Correct anything wrong. Nothing is saved until you tap Save.</p>';
   if(warn)h+='<div class="vc mid" style="padding:11px 13px"><p>'+esc(warn)+'</p></div>';
-  if(conf||m.assumptions){h+='<div style="font-size:12.5px;color:var(--ink2);margin:0 0 12px">'+
+  if(conf||m.assumptions){h+='<div class="ain" style="font-size:12.5px;color:var(--ink2);margin:0 0 12px">'+
     (conf?'<span class="tag '+cls[conf]+'">'+conf+' confidence</span> ':'')+esc(m.assumptions||'');
     if(a&&a.items&&a.items.length)h+='<div style="color:var(--muted);margin-top:6px">'+a.items.map(function(x){
       return esc(x.name)+' · '+esc(x.portion)+' · '+fmt(+x.kcal||0)+' kcal'}).join('<br>')+'</div>';
@@ -1219,7 +1225,8 @@ function mealSheet(m,isNew,warn){
     '<div class="f3">'+NF.map(function(f){return '<div class="fl"><label for="ms_'+f[0]+'">'+f[1]+' ('+f[2]+')</label>'+
       '<input type="number" inputmode="decimal" step="any" min="0" max="'+f[3]+'" id="ms_'+f[0]+'" value="'+(m[f[0]]!=null?m[f[0]]:'')+'"></div>'}).join('')+
     '</div></div>';
-  if(m.advice)h+='<div class="note" style="margin-top:4px"><b>Tip:</b> '+esc(m.advice)+'</div>';
+  if(m.advice)h+='<div class="note ain" style="margin-top:4px"><b>Tip:</b> '+esc(m.advice)+'</div>';
+  h+='<p id="ms_st" style="display:none;font-size:12.5px;color:var(--amber);margin:8px 0 0">You changed the meal, so the AI notes are cleared on save. Tap Estimate again for fresh ones.</p>';
   h+='<div id="ms_e" style="font-size:12.5px;color:var(--red);margin:10px 0 0;display:none"></div>'+
     '<button class="btn" type="button" id="ms_ok" style="margin-top:12px">Save</button>'+
     '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn gh sm" type="button" id="ms_re">Estimate again</button>'+
@@ -1228,10 +1235,15 @@ function mealSheet(m,isNew,warn){
   document.getElementById('mb').innerHTML=h;sheetOpen();
   var $=function(i){return document.getElementById(i)},
       snap=function(){return Array.prototype.map.call(document.querySelectorAll('#mb input,#mb select,#mb textarea'),function(e){return e.value}).join('|')},
+      fixed=function(){return [$('ms_t').value.trim()].concat(NF.map(function(f){return parseFloat($('ms_'+f[0]).value)})).join('|')},
+      fixedStart=fixed(),
       start=snap(),err=function(t){$('ms_e').textContent=t;$('ms_e').style.display='block'};
   /* a new estimate counts as unsaved even before any edit */
   GUARD=function(){return (!isNew&&snap()===start)||confirm(isNew?'Discard this meal?':'Discard your changes?')};
   $('ms_no').onclick=function(){sheetClose()};
+  /* oninput, not addEventListener: #mb is reused by every sheet */
+  document.getElementById('mb').oninput=function(){if(!$('ms_st'))return;var st=fixed()!==fixedStart;
+    document.querySelectorAll('#mb .ain').forEach(function(e){e.style.opacity=st?.35:1});$('ms_st').style.display=st?'':'none'};
   $('ms_re').onclick=function(){var t=$('ms_t').value.trim();if(!t){err('Type what you ate first.');return}
     GUARD=null;estimate(t,$('ms_d').value||m.eaten_on,{id:m.id,meal:$('ms_m').value||null,created_at:m.created_at,src:m._src})};
   if($('ms_x'))$('ms_x').onclick=function(){if(!confirm('Delete this meal?'))return;
@@ -1244,8 +1256,11 @@ function mealSheet(m,isNew,warn){
     var b=this,d=$('ms_d').value,t=$('ms_t').value.trim(),bad=null;
     if(!validDate(d)||d>ist()){err('Pick a date that is today or earlier.');return}
     if(!t){err('Type what you ate.');return}
-    var r={id:m.id,eaten_on:d,meal:$('ms_m').value||null,description:t,assumptions:m.assumptions||null,
-      confidence:m.confidence||null,advice:m.advice||null,ai:m.ai||null,updated_at:new Date().toISOString()};
+    /* AI notes describe the AI's numbers; once you change what you ate or the
+       numbers they no longer apply. The original AI answer stays in ai. */
+    var keepAI=fixed()===fixedStart;
+    var r={id:m.id,eaten_on:d,meal:$('ms_m').value||null,description:t,assumptions:keepAI?m.assumptions||null:null,
+      confidence:keepAI?m.confidence||null:null,advice:keepAI?m.advice||null:null,ai:m.ai||null,updated_at:new Date().toISOString()};
     NF.forEach(function(f){var el=$('ms_'+f[0]),v=parseFloat(el.value);el.style.borderColor='';
       if(isNaN(v)||v<0||v>f[3]){el.style.borderColor='var(--red)';bad=bad||el}else r[f[0]]=v});
     if(bad){err('Fill in every number. Values must be between 0 and the limit.');bad.focus();return}
@@ -1311,7 +1326,9 @@ document.querySelectorAll('#nSw button').forEach(function(b){b.onclick=function(
   document.querySelectorAll('#nSw button').forEach(function(z){z.classList.toggle('on',z===b)});
   NDAYS=+b.dataset.n;nChart()}});
 /* the India date may have rolled over while the app sat in the background */
-document.addEventListener('visibilitychange',function(){if(!document.hidden)foodAll()});
+var PULLED=0;
+document.addEventListener('visibilitychange',function(){if(document.hidden)return;
+  if(USER&&SB&&Date.now()-PULLED>60000&&!SCRIM.classList.contains('on'))foodAuth();else foodAll()});
 paint();foodAll();
 </script>
 <script>
