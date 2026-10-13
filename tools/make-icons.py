@@ -1,54 +1,36 @@
 #!/usr/bin/env python3
-"""Generate the app icons. Teal ground, white trend line, matching the app's
-own chart mark. Run from the repo root: python3 tools/make-icons.py"""
-import os
+"""Build the app icons from icons/source.webp (rounded teal square on a
+transparent ground). Run from the repo root: python3 tools/make-icons.py
 
-from PIL import Image, ImageDraw
+- any:      the rounded square as drawn, transparent corners
+- maskable: full-bleed teal, logo inside Android's 80% safe circle
+- apple:    full-bleed (iOS rounds the corners itself)"""
+import numpy as np
+from PIL import Image
 
-TEAL = (20, 96, 90)
-INK = (19, 37, 35)
-WHITE = (255, 255, 255)
-OUT = "icons"
-SS = 4  # supersample, then downscale for clean edges
+SRC, OUT = "icons/source.webp", "icons"
+CX, CY = 626, 612          # centre of the logo ring in the source
+BLEED = 420                # half-size of a crop that stays inside the square
 
+src = Image.open(SRC).convert("RGBA")
 
-def draw(size, maskable=False):
-    """maskable icons must keep their content inside the safe circle, because
-    Android crops them to whatever shape the launcher uses."""
-    s = size * SS
-    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
+# rounded square, trimmed to a centred square box
+any_ = src.crop((CX - 540, CY - 540, CX + 540, CY + 540))
 
-    if maskable:
-        d.rectangle([0, 0, s, s], fill=TEAL)
-        inset = s * 0.22           # content within the 80% safe zone
-    else:
-        d.rounded_rectangle([0, 0, s, s], radius=s * 0.22, fill=TEAL)
-        inset = s * 0.26
-
-    w = s - inset * 2
-    # a falling line with a flat stretch: the plan's shape, loss then the
-    # festive hold then loss again
-    pts = [(0.00, 0.14), (0.30, 0.42), (0.58, 0.46), (1.00, 0.86)]
-    xy = [(inset + x * w, inset + y * w) for x, y in pts]
-
-    d.line(xy, fill=WHITE, width=int(s * 0.058), joint="curve")
-    for px, py in (xy[0], xy[-1]):
-        r = s * 0.052
-        d.ellipse([px - r, py - r, px + r, py + r], fill=WHITE)
-
-    return img.resize((size, size), Image.LANCZOS)
+# full bleed: crop inside the square, then extend the edges so the ring
+# (about 780 px across) sits within the central 80%
+inner = np.asarray(src.crop((CX - BLEED, CY - BLEED, CX + BLEED, CY + BLEED)).convert("RGB"))
+pad = 70
+bleed = Image.fromarray(np.pad(inner, ((pad, pad), (pad, pad), (0, 0)), mode="edge"))
 
 
-os.makedirs(OUT, exist_ok=True)
-jobs = [
-    ("icon-192.png", 192, False),
-    ("icon-512.png", 512, False),
-    ("icon-maskable-512.png", 512, True),
-    ("apple-touch-icon.png", 180, True),   # iOS crops corners itself
-    ("favicon-32.png", 32, False),
-]
-for name, size, mask in jobs:
-    p = os.path.join(OUT, name)
-    draw(size, mask).save(p)
-    print(p, os.path.getsize(p), "bytes")
+def save(img, size, name):
+    img.resize((size, size), Image.LANCZOS).save(f"{OUT}/{name}", optimize=True)
+
+
+save(any_, 192, "icon-192.png")
+save(any_, 512, "icon-512.png")
+save(bleed, 512, "icon-maskable-512.png")
+save(bleed, 180, "apple-touch-icon.png")
+save(any_, 32, "favicon-32.png")
+print("icons written")

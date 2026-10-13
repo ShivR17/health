@@ -1,14 +1,20 @@
 // Estimates calories and macros for a typed meal description.
 //
-// Gemini estimates and suggests. It never totals the day: daily sums are
+// The AI estimates and suggests. It never totals the day: daily sums are
 // computed in the app from saved rows. Every estimate is shown for correction
 // before anything is written to the database.
 
-// Same fallback order as the extract function.
-const MODELS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash"];
+// Tried in order until one answers: Gemini first (same models as extract),
+// then Groq if GROQ_API_KEY is set. Each call gets at most 15 s and the whole
+// request stops trying new models after ~35 s, so the app always hears back.
+const GEMINI = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash"];
+const GROQ = [
+  { model: "qwen/qwen3.8-27b", extra: { reasoning_effort: "medium", reasoning_format: "hidden" } },
+  { model: "openai/gpt-oss-120b", extra: { reasoning_effort: "medium", include_reasoning: false } },
+];
+const PER_CALL = 15_000, BUDGET = 35_000;
 const url = (m: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`;
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -53,7 +59,12 @@ Advice (max two sentences, practical, Indian home or restaurant food):
 - Base it on the calories left after this meal, staying full within budget,
   and reaching the protein and fibre targets.
 - Steer away from foods likely to cause bloating or gas (and any the user lists).
-- No greetings, no medical claims, no exact totals for the day.`;
+- No greetings, no medical claims, no exact totals for the day.
+
+Reply with JSON only: {"meal": "breakfast"|"lunch"|"dinner"|"snack"|null,
+"items": [{"name": str, "portion": str, "kcal": num}], "kcal": num, "protein_g": num,
+"carbs_g": num, "fat_g": num, "fibre_g": num, "assumptions": str,
+"confidence": "low"|"medium"|"high", "advice": str}`;
 
 const n = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : NaN);
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -101,7 +112,7 @@ Deno.serve(async (req) => {
       (avoid ? `Foods that bloat this user: ${String(avoid).slice(0, 500)}\n` : "") +
       `\nMeal:\n${meal}`;
 
-    const payload = JSON.stringify({
+    const gemini = JSON.stringify({
       contents: [{ parts: [{ text: RULES }, { text: context }] }],
       generationConfig: {
         responseMimeType: "application/json",
@@ -109,43 +120,58 @@ Deno.serve(async (req) => {
         thinkingConfig: { thinkingLevel: "LOW" },
       },
     });
-
-    // Overload falls through to the next model. A 429 is a quota wall: stop.
-    let res!: Response, body: Record<string, unknown> = {}, used = "";
-    outer:
-    for (const model of MODELS) {
-      for (let attempt = 0; attempt < 2; attempt++) {
-        used = model;
-        res = await fetch(url(model), {
-          method: "POST",
+    const groqKey = Deno.env.get("GROQ_API_KEY");
+    const tries: { name: string; call: (signal: AbortSignal) => Promise<Response>; text: (b: any) => string }[] = [
+      ...GEMINI.map((m) => ({
+        name: m,
+        call: (signal: AbortSignal) => fetch(url(m), {
+          method: "POST", signal,
           headers: { "x-goog-api-key": key, "Content-Type": "application/json" },
-          body: payload,
-        });
-        body = await res.json().catch(() => ({}));
-        if (res.ok || res.status === 429) break outer;
-        if (res.status !== 503 && res.status !== 500) break;
-        await sleep(1200 * (attempt + 1));
+          body: gemini,
+        }),
+        text: (b: any) => b?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") ?? "",
+      })),
+      ...(groqKey ? GROQ : []).map((g) => ({
+        name: g.model,
+        call: (signal: AbortSignal) => fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST", signal,
+          headers: { Authorization: `Bearer ${groqKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: g.model, ...g.extra,
+            response_format: { type: "json_object" },
+            messages: [{ role: "system", content: RULES }, { role: "user", content: context }],
+          }),
+        }),
+        text: (b: any) => b?.choices?.[0]?.message?.content ?? "",
+      })),
+    ];
+
+    const start = Date.now();
+    let e: Record<string, any> | null = null, used = "", quota = 0, failed = 0;
+    for (const t of tries) {
+      const left = BUDGET + 10_000 - (Date.now() - start);
+      if (Date.now() - start > BUDGET || left < 3_000) break;
+      try {
+        const res = await t.call(AbortSignal.timeout(Math.min(PER_CALL, left)));
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          res.status === 429 ? quota++ : failed++;
+          console.error(t.name, res.status, JSON.stringify(body).slice(0, 300));
+          continue;
+        }
+        e = JSON.parse(t.text(body).replace(/^```(json)?|```$/g, "").trim());
+        used = t.name;
+        break;
+      } catch (err) {
+        failed++;
+        console.error(t.name, String(err).slice(0, 200));
       }
     }
 
-    if (res.status === 429) {
-      return json({
-        error: "quota",
-        message: "The free daily AI limit is used up. It resets after midnight US Pacific time. Enter the numbers by hand.",
-      }, 429);
-    }
-    if (!res.ok) {
-      console.error("gemini", res.status, JSON.stringify(body).slice(0, 800));
-      return json({ error: "upstream", message: "The estimator could not be reached. Enter the numbers by hand." }, 502);
-    }
-
-    const out = (body as any)?.candidates?.[0]?.content?.parts
-      ?.map((p: { text?: string }) => p.text ?? "").join("") ?? "";
-    let e: Record<string, any>;
-    try {
-      e = JSON.parse(out);
-    } catch {
-      return json({ error: "unparseable", message: "No estimate came back. Try rewording, or enter the numbers by hand." }, 422);
+    if (!e) {
+      return quota && !failed
+        ? json({ error: "quota", message: "The free daily AI limit is used up. Enter the numbers by hand." }, 429)
+        : json({ error: "upstream", message: "The estimator could not be reached. Enter the numbers by hand." }, 502);
     }
 
     // Reject impossible answers rather than pass them to the app.
