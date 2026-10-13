@@ -6,7 +6,7 @@
 // and Gemini calls are never cached: stale health data would be worse than no
 // data, and a cached write would be a lie.
 
-const VERSION = "v6";
+const VERSION = "v7";
 const SHELL = `shell-${VERSION}`;
 
 const ASSETS = [
@@ -73,5 +73,24 @@ self.addEventListener("fetch", (e) => {
         return res;
       }).catch(() => hit)
     ),
+  );
+});
+
+// Meal reminders sent by the remind function. Tapping one opens the app.
+self.addEventListener("push", (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { /* plain text */ }
+  e.waitUntil(self.registration.showNotification(d.title || "Log your meals", {
+    body: d.body || "", tag: d.tag || "meal", icon: "icons/icon-192.png?v=2", badge: "icons/icon-192.png?v=2",
+  }));
+});
+
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((ws) => {
+      const w = ws.find((c) => c.url.startsWith(self.registration.scope));
+      return w ? w.focus() : self.clients.openWindow(self.registration.scope);
+    }),
   );
 });

@@ -292,6 +292,8 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
     <div class="kv"><span>Fibre</span><span id="kF"></span></div>
     <div class="kv"><span>Carbs and fat</span><span>Tracked, no target</span></div>
     <button class="lnk" type="button" id="kEd">Edit targets</button>
+    <div class="kv" style="margin-top:6px"><span>Meal reminders<br><small style="color:var(--muted)">2 pm breakfast and lunch · 9 pm dinner and snack</small></span><span id="rmSt">Off</span></div>
+    <button class="lnk" type="button" id="rmBtn">Turn on reminders</button>
     <div class="note">Protein at every meal — eggs, curd, dal, paneer, chicken, whey. Cut the rice and roti, never the dal or paneer. One meal out per week, counted.</div>
   </div>
 
@@ -1417,6 +1419,33 @@ document.querySelectorAll('#nSw button').forEach(function(b){b.onclick=function(
 var PULLED=0;
 document.addEventListener('visibilitychange',function(){if(document.hidden)return;
   if(USER&&SB&&Date.now()-PULLED>60000&&!SCRIM.classList.contains('on'))foodAuth();else foodAll()});
+/* ----- meal reminders (phone notifications) ----- */
+function rmReg(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window?navigator.serviceWorker.ready:null}
+function rmShow(on,msg){document.getElementById('rmSt').textContent=msg||(on?'On':'Off');
+  document.getElementById('rmBtn').textContent=on?'Turn off reminders':'Turn on reminders';document.getElementById('rmBtn').dataset.on=on?1:''}
+function rmInit(){var r=rmReg();if(!r){rmShow(false,'Not supported here');document.getElementById('rmBtn').style.display='none';return}
+  r.then(function(g){return g.pushManager.getSubscription()}).then(function(s){rmShow(!!s&&Notification.permission==='granted')},function(){})}
+document.getElementById('rmBtn').onclick=function(){
+  var b=this,r=rmReg();if(!r)return;if(!SB||!USER){openAuth();return}
+  b.disabled=true;var done=function(on,msg){b.disabled=false;rmShow(on,msg)};
+  if(b.dataset.on){r.then(function(g){return g.pushManager.getSubscription()}).then(function(s){
+      if(!s)return done(false);var ep=s.endpoint;
+      return s.unsubscribe().then(function(){return SB.from('push_subs').delete().eq('endpoint',ep)}).then(function(){done(false)})})
+    .catch(function(){done(true,'Could not turn off. Try again.')});return}
+  Notification.requestPermission().then(function(p){
+    if(p!=='granted'){done(false,'Blocked. Allow notifications in phone settings.');return}
+    return Promise.all([r,SB.functions.invoke('remind',{body:{op:'key'}})]).then(function(x){
+      var g=x[0],k=x[1]&&x[1].data&&x[1].data.public;if(!k)throw 0;
+      var raw=atob(k.replace(/-/g,'+').replace(/_/g,'/')),key=new Uint8Array(raw.length);
+      for(var i=0;i<raw.length;i++)key[i]=raw.charCodeAt(i);
+      return g.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key}).then(function(s){
+        var j=s.toJSON();
+        return SB.from('push_subs').upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,user_id:USER.id},{onConflict:'endpoint'})
+          .then(function(z){if(z.error)throw z.error;
+            g.showNotification('Reminders are on',{body:'You will get one at 2 pm and 9 pm if a meal is not logged.',icon:'icons/icon-192.png?v=2',tag:'rm-on'});
+            done(true)})})})})
+  .catch(function(){done(false,'Could not turn on. Check your connection and try again.')})};
+rmInit();
 paint();foodAll();
 </script>
 <script>
