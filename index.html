@@ -955,6 +955,9 @@ document.getElementById('go').onclick=function(){
   document.getElementById('res').classList.add('on');
   if(Object.keys(en).length>2){
     Object.keys(EXTRA).forEach(function(k){if(en[k]==null)en[k]=EXTRA[k]});EXTRA={};
+    /* merge with an entry already logged that day, as the cloud upsert does */
+    var old=LOG.filter(function(r){return r.date===en.date})[0];
+    if(old)for(var k in old)if(en[k]==null&&k!=='_new')en[k]=old[k];
     en._new=true;LOG=LOG.filter(function(r){return r.date!==en.date});LOG.push(en);persist()}
 };
 
@@ -1255,7 +1258,9 @@ function mealSheet(m,isNew,warn){
   document.getElementById('mb').oninput=function(){if(!$('ms_st'))return;var st=fixed()!==fixedStart;
     document.querySelectorAll('#mb .ain').forEach(function(e){e.style.opacity=st?.35:1});$('ms_st').style.display=st?'':'none'};
   $('ms_re').onclick=function(){var t=$('ms_t').value.trim();if(!t){err('Type what you ate first.');return}
-    GUARD=null;estimate(t,$('ms_d').value||m.eaten_on,{id:m.id,meal:$('ms_m').value||null,created_at:m.created_at,src:m._src})};
+    /* a meal word typed at the start ("Dinner: ...") replaces the old type */
+    var pm=/^\s*(breakfast|lunch|dinner|snacks?)\b/i.exec(t);
+    GUARD=null;estimate(t,$('ms_d').value||m.eaten_on,{id:m.id,meal:pm?pm[1].toLowerCase().replace(/s$/,''):$('ms_m').value||null,created_at:m.created_at,src:m._src})};
   if($('ms_x'))$('ms_x').onclick=function(){if(!confirm('Delete this meal?'))return;
     this.disabled=true;var b=this;
     SB.from('meals').delete().eq('id',m.id).then(function(x){
