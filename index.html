@@ -95,13 +95,17 @@ display:flex;align-items:center;gap:10px;min-height:48px}
 .step.open .sb{display:block}
 .sb div{font-size:13.5px;color:var(--ink2);padding:5px 0 5px 14px;border-left:2px solid var(--line);margin-bottom:3px}
 
-/* forms */
+/* forms: one font and size for every field (browsers do not inherit it) */
+input,select,textarea{font:500 16px/1.4 'Inter',system-ui,sans-serif;color:var(--ink);letter-spacing:0}
+::placeholder{color:var(--muted);font-weight:400;opacity:1}
+input[type=date]{-webkit-appearance:none;appearance:none;text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left}
 .fl{margin-bottom:11px}
 .fl label{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
-.fl input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:500 16px 'Inter';
+.fl input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:500 16px/1.4 'Inter',system-ui,sans-serif;
 background:var(--card);color:var(--ink);min-height:48px}
 .fl input:focus{outline:2px solid var(--tealM);outline-offset:1px;border-color:transparent}
-.fl textarea,.fl select,.fin textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:500 16px 'Inter';
+.fl textarea,.fl select,.fin textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:500 16px/1.4 'Inter',system-ui,sans-serif;
 background:var(--card);color:var(--ink);min-height:48px}
 .fl textarea,.fin textarea{resize:vertical;line-height:1.4}
 /* food */
@@ -114,7 +118,7 @@ background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;min-he
 .ml .d{flex:1;min-width:0;font-size:13.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ml .v{font:600 14px 'Inter Tight';white-space:nowrap}
 .dn{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.dn input{flex:1;border:1px solid var(--line);border-radius:11px;padding:10px;font:500 15px 'Inter';background:var(--card);color:var(--ink);min-height:44px}
+.dn input{flex:1;border:1px solid var(--line);border-radius:11px;padding:10px;font:500 16px/1.4 'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);min-height:44px}
 .dn button{border:1px solid var(--line);background:var(--card);border-radius:11px;width:44px;height:44px;display:grid;place-items:center;color:var(--ink2);cursor:pointer}
 .ftot{font-size:12.5px;color:var(--ink2);margin:2px 0 8px}
 .lnk{border:none;background:none;color:var(--teal);font:600 13px 'Inter';padding:8px 0;cursor:pointer}
@@ -1211,6 +1215,7 @@ function estimate(text,day,keep){
   Promise.race([SB.functions.invoke('nutrition',{body:{text:text,so_far:so,targets:NT,avoid:NT.avoid}}),slow])
   .then(function(r){
     if(r&&!r.error&&r.data&&!r.data.error){var a=r.data;a.text=text;
+      if(!keep.id&&a.meals&&a.meals.length>1){splitSheet(a,day,keep.src,base);return}
       /* a typed prefix ("Dinner: ...") beats the AI's guess */
       if(!keep.meal&&a.meal&&!/^\s*(breakfast|lunch|dinner|snacks?)\b/i.test(text))base.meal=a.meal;
       NF.forEach(function(f){base[f[0]]=a[f[0]]});
@@ -1291,6 +1296,69 @@ function mealSheet(m,isNew,warn){
       if(m._src){$(m._src).value='';draftPut()}
       var fast=dayOf(r.eaten_on).filter(function(y){return isFast(y)&&y.id!==r.id}).map(function(y){return y.id});
       if(fast.length&&!isFast(r))SB.from('meals').delete().in('id',fast).then(function(z){
+        if(z.error)return;MEALS=MEALS.filter(function(y){return fast.indexOf(y.id)<0});mPut();foodAll()});
+      sheetClose(true);foodAll()},fail)}}
+
+/* One text naming several occasions ("breakfast poha, lunch dal rice") comes
+   back split. Each part is checked here and saved as its own meal. */
+function splitSheet(a,day,src,base){
+  var P=a.meals,cls={high:'to',medium:'tw',low:'ta'};
+  var h='<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Check these '+P.length+' meals</div>'+
+    '<p style="font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5">Correct anything wrong. Nothing is saved until you tap Save all.</p>'+
+    '<div class="fl"><label for="sp_d">Date</label><input type="date" id="sp_d" max="'+ist()+'" value="'+esc(day)+'"></div>';
+  P.forEach(function(p,i){
+    h+='<div id="sp_'+i+'" style="border-top:1px solid var(--line);padding-top:12px;margin-top:6px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font:600 14px \'Inter Tight\'">Meal '+(i+1)+'</b>'+
+      '<button type="button" class="lnk" data-rm="'+i+'" style="color:var(--red)">Remove</button></div>'+
+      '<div class="ain" style="font-size:12.5px;color:var(--ink2);margin:0 0 10px">'+
+      '<span class="tag '+cls[p.confidence]+'">'+p.confidence+' confidence</span> '+esc(p.assumptions)+
+      (p.mismatch?'<div style="color:var(--amber);margin-top:4px">Calories and macros do not quite agree. Check them.</div>':'')+'</div>'+
+      '<div class="f3"><div class="fl"><label for="sp_m'+i+'">Meal</label><select id="sp_m'+i+'"><option value="">—</option>'+
+      Object.keys(MT).map(function(k){return '<option value="'+k+'"'+(p.meal===k?' selected':'')+'>'+MT[k]+'</option>'}).join('')+'</select></div></div>'+
+      '<div class="fl"><label for="sp_t'+i+'">What you ate</label><textarea id="sp_t'+i+'" rows="2" maxlength="1000">'+esc(p.description)+'</textarea></div>'+
+      '<div class="f3">'+NF.map(function(f){return '<div class="fl"><label for="sp_'+f[0]+i+'">'+f[1]+' ('+f[2]+')</label>'+
+        '<input type="number" inputmode="decimal" step="any" min="0" max="'+f[3]+'" id="sp_'+f[0]+i+'" value="'+p[f[0]]+'"></div>'}).join('')+'</div></div>'});
+  if(a.advice)h+='<div class="note" style="margin-top:4px"><b>Tip:</b> '+esc(a.advice)+'</div>';
+  h+='<div id="sp_e" style="font-size:12.5px;color:var(--red);margin:10px 0 0;display:none"></div>'+
+    '<button class="btn" type="button" id="sp_ok" style="margin-top:12px">Save all</button>'+
+    '<button class="btn gh sm" type="button" id="sp_one" style="margin-top:8px">Save as one meal instead</button>'+
+    '<button type="button" id="sp_no" style="width:100%;margin-top:6px;border:none;background:none;color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Discard</button>';
+  document.getElementById('mb').innerHTML=h;document.getElementById('mb').oninput=null;sheetOpen();
+  var $=function(i){return document.getElementById(i)},gone={},
+      fixed=function(i){return [$('sp_t'+i).value.trim(),$('sp_m'+i).value].concat(NF.map(function(f){return parseFloat($('sp_'+f[0]+i).value)})).join('|')},
+      start=P.map(function(p,i){return fixed(i)}),
+      err=function(t){$('sp_e').textContent=t;$('sp_e').style.display='block'};
+  GUARD=function(){return confirm('Discard these meals?')};
+  $('sp_no').onclick=function(){sheetClose()};
+  document.querySelectorAll('#mb [data-rm]').forEach(function(b){b.onclick=function(){var i=+b.dataset.rm;gone[i]=1;$('sp_'+i).style.display='none';
+    if(Object.keys(gone).length===P.length)err('All meals removed. Tap Discard, or close this sheet.')}});
+  $('sp_one').onclick=function(){GUARD=null;
+    NF.forEach(function(f){base[f[0]]=a[f[0]]});
+    base.assumptions=P.map(function(p){return p.assumptions}).join(' ');base.confidence=a.confidence;base.advice=a.advice;base.ai=a;base.meal=null;
+    mealSheet(base,true)};
+  $('sp_ok').onclick=function(){
+    var b=this,d=$('sp_d').value,rows=[],bad=null,now=new Date().toISOString();
+    if(!validDate(d)||d>ist()){err('Pick a date that is today or earlier.');return}
+    P.forEach(function(p,i){if(gone[i])return;var t=$('sp_t'+i).value.trim(),keepAI=fixed(i)===start[i];
+      if(!t){bad=bad||$('sp_t'+i);return}
+      var r={id:uuid(),eaten_on:d,meal:$('sp_m'+i).value||null,description:t,assumptions:keepAI?p.assumptions:null,
+        confidence:keepAI?p.confidence:null,advice:null,ai:Object.assign({},p,{text:a.text,model:a.model}),updated_at:now};
+      NF.forEach(function(f){var el=$('sp_'+f[0]+i),v=parseFloat(el.value);el.style.borderColor='';
+        if(isNaN(v)||v<0||v>f[3]){el.style.borderColor='var(--red)';bad=bad||el}else r[f[0]]=v});
+      rows.push(r)});
+    if(bad){err('Fill in every meal and number. Values must be between 0 and the limit.');bad.focus();return}
+    if(!rows.length){err('All meals removed. Tap Discard, or close this sheet.');return}
+    rows[rows.length-1].advice=a.advice||null;
+    if(!USER||!SB){openAuth();return}
+    b.disabled=true;b.textContent='Saving…';$('sp_e').style.display='none';
+    var fail=function(){b.disabled=false;b.textContent='Save all';err('Could not save. Check your connection and try again. Your entries are kept here.')};
+    SB.from('meals').upsert(rows,{onConflict:'id'}).select().then(function(x){
+      if(x.error){fail();return}
+      var ids=rows.map(function(r){return r.id});
+      MEALS=MEALS.filter(function(y){return ids.indexOf(y.id)<0}).concat(x.data||[]);mPut();
+      if(src){$(src).value='';draftPut()}
+      var fast=dayOf(d).filter(function(y){return isFast(y)}).map(function(y){return y.id});
+      if(fast.length)SB.from('meals').delete().in('id',fast).then(function(z){
         if(z.error)return;MEALS=MEALS.filter(function(y){return fast.indexOf(y.id)<0});mPut();foodAll()});
       sheetClose(true);foodAll()},fail)}}
 
