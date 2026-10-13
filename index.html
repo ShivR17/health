@@ -1192,7 +1192,8 @@ function estimate(text,day,keep){
   Promise.race([SB.functions.invoke('nutrition',{body:{text:text,so_far:so,targets:NT,avoid:NT.avoid}}),slow])
   .then(function(r){
     if(r&&!r.error&&r.data&&!r.data.error){var a=r.data;a.text=text;
-      if(!keep.meal&&a.meal)base.meal=a.meal;
+      /* a typed prefix ("Dinner: ...") beats the AI's guess */
+      if(!keep.meal&&a.meal&&!/^\s*(breakfast|lunch|dinner|snacks?)\b/i.test(text))base.meal=a.meal;
       NF.forEach(function(f){base[f[0]]=a[f[0]]});
       base.assumptions=a.assumptions;base.confidence=a.confidence;base.advice=a.advice;base.ai=a;
       mealSheet(base,!keep.id);return}
