@@ -1,5 +1,9 @@
 // Estimates calories and macros for a typed meal description.
 //
+// Packaged and branded items are then checked against their real label on
+// the web (lookup.ts): cache → Tavily → Exa → a small AI read of the snippets.
+// Without TAVILY_API_KEY and EXA_API_KEY that step is skipped.
+//
 // The AI estimates and suggests. It never totals the day: daily sums are
 // computed in the app from saved rows. Every estimate is shown for correction
 // before anything is written to the database.
@@ -14,7 +18,9 @@ const GROQ = [
   { model: "openai/gpt-oss-120b", extra: { reasoning_effort: "medium", include_reasoning: false, max_completion_tokens: 3000 } },
   { model: "qwen/qwen3.8-27b", extra: { reasoning_effort: "medium", reasoning_format: "hidden", max_completion_tokens: 950 } },
 ];
-const PER_CALL = 15_000, BUDGET = 35_000;
+const PER_CALL = 15_000, BUDGET = 35_000, GROUND_MS = 15_000;
+import { cache, eaten, FIELDS, lookup } from "./lookup.ts";
+
 const url = (m: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`;
 
@@ -40,6 +46,19 @@ const PART = {
   assumptions: { type: "STRING", description: "key portion and cooking assumptions, one short line" },
   confidence: { type: "STRING", enum: ["low", "medium", "high"] },
 };
+const PACKED = {
+  type: "ARRAY",
+  description: "branded or packaged products and restaurant-chain items only; [] for home food",
+  items: {
+    type: "OBJECT",
+    properties: {
+      product: { type: "STRING" }, part: { type: "INTEGER" },
+      amount_g: { type: "NUMBER", nullable: true }, units: num,
+      kcal: num, protein_g: num, carbs_g: num, fat_g: num, fibre_g: num,
+    },
+    required: ["product", "part", "units", "kcal", "protein_g", "carbs_g", "fat_g", "fibre_g"],
+  },
+};
 const NEED = ["items", "kcal", "protein_g", "carbs_g", "fat_g", "fibre_g", "assumptions", "confidence"];
 const SCHEMA = {
   type: "OBJECT",
@@ -54,9 +73,10 @@ const SCHEMA = {
         required: ["description", "meal", ...NEED],
       },
     },
+    packaged: PACKED,
     advice: { type: "STRING", description: "at most two sentences" },
   },
-  required: [...NEED, "meals", "advice"],
+  required: [...NEED, "meals", "packaged", "advice"],
 };
 
 const RULES = `You estimate the nutrition of one meal for an adult man in India.
@@ -79,6 +99,17 @@ Several meals in one text:
   The top-level numbers are then the sum of all entries.
 - One occasion only: "meals" is [] and the top-level fields describe it.
 
+Packaged and branded items:
+- List every branded or packaged product and restaurant-chain item in "packaged"
+  (for example Phab protein bar, Amul Kool, Haldiram's bhujia, McAloo Tikki).
+  Home-cooked or generic dishes do not go there.
+- product: brand plus product name, spelling corrected ("phab protin bar" ->
+  "Phab Protein Bar"). part: index of its entry in "meals", or 0 if one meal.
+- amount_g: grams eaten if the text gives grams or ml, else null. units: number of
+  packs, bars or pieces eaten (default 1).
+- The numbers are your own estimate for the amount eaten; they are also counted
+  in the meal totals as usual.
+
 Advice (max two sentences, practical, Indian home or restaurant food):
 - Base it on the calories left after this meal, staying full within budget,
   and reaching the protein and fibre targets.
@@ -91,6 +122,8 @@ Reply with JSON only: {"meal": "breakfast"|"lunch"|"dinner"|"snack"|null,
 "confidence": "low"|"medium"|"high",
 "meals": [{"description": str, "meal": ..., "items": [...], "kcal": num, "protein_g": num,
 "carbs_g": num, "fat_g": num, "fibre_g": num, "assumptions": str, "confidence": ...}],
+"packaged": [{"product": str, "part": int, "amount_g": num|null, "units": num, "kcal": num,
+"protein_g": num, "carbs_g": num, "fat_g": num, "fibre_g": num}],
 "advice": str}`;
 
 const n = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : NaN);
@@ -103,6 +136,37 @@ const role = (req: Request) => {
     return "";
   }
 };
+
+// Small, cheap read of label snippets: Groq first, Gemini if Groq fails.
+async function readLabel(prompt: string, gemini: string, groq: string | undefined) {
+  const parse = (t: string) => JSON.parse(t.replace(/^```(json)?|```$/g, "").trim());
+  if (groq) {
+    try {
+      const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST", signal: AbortSignal.timeout(8_000),
+        headers: { Authorization: `Bearer ${groq}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "openai/gpt-oss-120b", reasoning_effort: "low", include_reasoning: false,
+          max_completion_tokens: 800, response_format: { type: "json_object" },
+          messages: [{ role: "user", content: prompt }],
+        }),
+      });
+      if (r.ok) return parse((await r.json())?.choices?.[0]?.message?.content ?? "");
+      console.error("read groq", r.status);
+    } catch (e) { console.error("read groq", String(e).slice(0, 120)); }
+  }
+  const r = await fetch(url(GEMINI[0]), {
+    method: "POST", signal: AbortSignal.timeout(8_000),
+    headers: { "x-goog-api-key": gemini, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: "LOW" } },
+    }),
+  });
+  if (!r.ok) throw new Error(`gemini ${r.status}`);
+  const b = await r.json();
+  return parse(b?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") ?? "");
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -221,7 +285,8 @@ Deno.serve(async (req) => {
             return c && { ...c, description: String(p.description ?? "").trim().slice(0, 1000) };
           });
         const split = parts.length > 1 && parts.every((p: any) => p && p.description) ? parts : [];
-        return { top, split, advice: String(e.advice ?? "").slice(0, 400), model: t.name };
+        const packaged = Array.isArray(e.packaged) ? e.packaged.slice(0, 3) : [];
+        return { top, split, packaged, advice: String(e.advice ?? "").slice(0, 400), model: t.name };
       } catch (err) {
         if (String(err).includes("http")) throw err;
         if (!outer?.aborted) { failed++; console.error(t.name, String(err).slice(0, 200)); }
@@ -247,7 +312,36 @@ Deno.serve(async (req) => {
         : json({ error: "upstream", message: "The estimator could not be reached. Enter the numbers by hand." }, 502);
     }
 
-    const { top, split, advice, model } = got;
+    const { top, split, packaged, advice, model } = got;
+
+    // Swap the AI's guess for real label values where the web has them.
+    const env = { tavily: Deno.env.get("TAVILY_API_KEY"), exa: Deno.env.get("EXA_API_KEY") };
+    const sources: { product: string; url: string | null; kind: string | null; from: string }[] = [];
+    if ((env.tavily || env.exa) && packaged.length) {
+      const store = cache(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const items = packaged.filter((p: any) => p && typeof p.product === "string" && p.product.trim());
+      const done = await Promise.race([
+        Promise.all(items.map((p: any) =>
+          lookup(p.product.trim().slice(0, 120), env, store, (q) => readLabel(q, key, groqKey))
+            .then((r) => ({ p, r }), () => ({ p, r: { found: null, from: "none" } })))),
+        new Promise<null>((res) => setTimeout(() => res(null), GROUND_MS)),
+      ]);
+      for (const { p, r } of done ?? []) {
+        if (!r.found) continue;
+        const now = eaten(r.found, n(p.amount_g) > 0 ? n(p.amount_g) : null, n(p.units) || 1);
+        const into: any = split.length ? split[Number(p.part)] : top;
+        if (!now || !into) continue;
+        for (const f of FIELDS) {
+          const v = Math.max(0, into[f] - (n(p[f]) || 0) + now[f]);
+          into[f] = f === "kcal" ? Math.round(v) : r1(v);
+        }
+        let where = "the web";
+        try { where = new URL(r.found.source_url!).hostname.replace(/^www\./, ""); } catch { /* keep */ }
+        into.assumptions = `${into.assumptions} ${p.product}: label values from ${where}.`.trim().slice(0, 600);
+        sources.push({ product: p.product, url: r.found.source_url, kind: r.found.source_kind, from: r.from });
+      }
+    }
+
     if (split.length) {
       for (const f of ["kcal", "protein_g", "carbs_g", "fat_g", "fibre_g"] as const) {
         (top as any)[f] = f === "kcal"
@@ -255,7 +349,7 @@ Deno.serve(async (req) => {
           : r1(split.reduce((a: number, p: any) => a + p[f], 0));
       }
     }
-    return json({ ...top, meals: split, advice, model });
+    return json({ ...top, meals: split, advice, model, sources });
   } catch (err) {
     return json({ error: "failed", message: String(err) }, 500);
   }
