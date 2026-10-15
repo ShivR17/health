@@ -42,10 +42,12 @@ Deno.test("rank puts the label first and trims snippets", () => {
 
 Deno.test("facts rejects impossible or inconsistent rows", () => {
   assertEquals(facts(LABEL, 900), LABEL);
-  assertEquals(facts({ ...LABEL, fibre_g: undefined }, 900)?.fibre_g, 0);
+  assertEquals(facts({ ...LABEL, fibre_g: undefined }, 900)?.fibre_g, null);
   assertEquals(facts({ ...LABEL, kcal: 950 }, 900), null);       // over 900 per 100 g
   assertEquals(facts({ ...LABEL, kcal: 100 }, 900), null);       // macros say ~383
   assertEquals(facts({ ...LABEL, protein_g: -1 }, 900), null);
+  assertEquals(facts({ kcal: 243.2, protein_g: 21, carbs_g: 27.6, fat_g: null }, 3000)?.fat_g, 5.4); // derived
+  assertEquals(facts({ kcal: 243.2, protein_g: 21, carbs_g: null, fat_g: null }, 3000), null);      // two missing
   assertEquals(facts({ kcal: "383", protein_g: "30", carbs_g: "40", fat_g: "11.5" }, 900)?.kcal, 383);
 });
 

@@ -332,7 +332,8 @@ Deno.serve(async (req) => {
         const into: any = split.length ? split[Number(p.part)] : top;
         if (!now || !into) continue;
         for (const f of FIELDS) {
-          const v = Math.max(0, into[f] - (n(p[f]) || 0) + now[f]);
+          if (now[f] == null) continue;   // label row missing: keep the AI's number
+          const v = Math.max(0, into[f] - (n(p[f]) || 0) + now[f]!);
           into[f] = f === "kcal" ? Math.round(v) : r1(v);
         }
         let where = "the web";

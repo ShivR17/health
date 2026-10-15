@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
       });
       for (const s of (subs ?? []).filter((x) => x.user_id === u)) {
         try {
-          await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, body, { TTL: 3600 });
+          await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, body, { TTL: 3600, urgency: "high" });
           sent++;
         } catch (err: any) {
           // The phone dropped this subscription: forget it.

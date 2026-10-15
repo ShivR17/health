@@ -8,7 +8,7 @@
 // Every step has a timeout and every failure returns null, so the meal
 // estimate the user already has is never lost.
 
-export type Facts = { kcal: number; protein_g: number; carbs_g: number; fat_g: number; fibre_g: number };
+export type Facts = { kcal: number; protein_g: number; carbs_g: number; fat_g: number; fibre_g: number | null };
 export type Hit = { title: string; url: string; text: string };
 export type Found = {
   found: boolean;
@@ -98,9 +98,17 @@ export function facts(v: any, max: number): Facts | null {
   const o: any = {};
   for (const k of FIELDS) {
     const x = num(v[k]);
-    if (k === "fibre_g" && isNaN(x)) { o[k] = 0; continue; }
-    if (isNaN(x) || x < 0) return null;
-    o[k] = Math.round(x * 10) / 10;
+    if (k === "fibre_g" && isNaN(x)) { o[k] = null; continue; }   // unknown: keep the AI guess
+    if (x < 0) return null;
+    o[k] = isNaN(x) ? NaN : Math.round(x * 10) / 10;
+  }
+  // Snippets often cut off one row: work out a single missing macro from kcal.
+  const gone = (["protein_g", "carbs_g", "fat_g"] as const).filter((k) => isNaN(o[k]));
+  if (isNaN(o.kcal) || gone.length > 1) return null;
+  if (gone.length === 1) {
+    const g = gone[0], per = g === "fat_g" ? 9 : 4;
+    const rest = 4 * (o.protein_g || 0) + 4 * (o.carbs_g || 0) + 9 * (o.fat_g || 0);
+    o[g] = Math.max(0, Math.round(((o.kcal - rest) / per) * 10) / 10);
   }
   if (o.kcal > max || o.protein_g + o.carbs_g + o.fat_g > (max / 900) * 100 + 1) return null;
   const m = 4 * o.protein_g + 4 * o.carbs_g + 9 * o.fat_g;
@@ -110,7 +118,10 @@ export function facts(v: any, max: number): Facts | null {
 
 export const READ_PROMPT = `Read these search snippets and give the nutrition label of the product.
 Use the manufacturer's own label when a snippet has it; else a retailer copy of the label; else the best other source.
-If the snippets do not give numbers for this exact product, found=false. Never guess.
+If the product comes in several flavours or sizes and the text names none, use the
+standard or most common one and name it in serving_desc. Labels may list only per serving
+or only per 100 g; give what is there. If no snippet gives numbers for this product, found=false.
+Never invent numbers.
 JSON only: {"found":bool,"per100":{"kcal":n,"protein_g":n,"carbs_g":n,"fat_g":n,"fibre_g":n}|null,
 "serving_g":n|null,"serving_desc":str|null,"serving":{same fields}|null,"url":str|null}`;
 
@@ -134,7 +145,7 @@ export function parseRead(product: string, j: any, hits: Hit[]): Found | null {
 export function eaten(f: Found, amount_g: number | null, units: number): Facts | null {
   const u = units > 0 && units <= 20 ? units : 1;
   const scale = (x: Facts, k: number) =>
-    Object.fromEntries(FIELDS.map((n) => [n, Math.round(x[n] * k * 10) / 10])) as Facts;
+    Object.fromEntries(FIELDS.map((n) => [n, x[n] == null ? null : Math.round(x[n]! * k * 10) / 10])) as Facts;
   if (amount_g && amount_g > 0 && f.per100) return scale(f.per100, amount_g / 100);
   if (f.serving) return scale(f.serving, u);
   if (f.per100 && f.serving_g) return scale(f.per100, (f.serving_g / 100) * u);
@@ -193,7 +204,9 @@ export async function lookup(
   let found: Found | null = null;
   try {
     const snippets = top.map((h, i) => `[${i + 1}] ${h.url}\n${h.title}\n${h.text}`).join("\n\n");
-    found = parseRead(product, await read(`${READ_PROMPT}\n\nProduct: ${product}\n\n${snippets}`), top);
+    const j = await read(`${READ_PROMPT}\n\nProduct: ${product}\n\n${snippets}`);
+    found = parseRead(product, j, top);
+    if (!found) console.error("read miss", product, JSON.stringify(j).slice(0, 300));
   } catch (e) {
     console.error("read", String(e).slice(0, 120));
     return { found: null, from: s.via as "tavily" | "exa" };  // AI down: do not cache
