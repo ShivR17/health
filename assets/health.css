@@ -296,3 +296,49 @@ background:linear-gradient(140deg,hsl(var(--c) 90% 88%),hsl(var(--c) 82% 66%));b
 transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}
 .swatches button.on{box-shadow:0 0 0 2px var(--sf-canvas),0 0 0 4px hsl(var(--c) 70% 38%)}
 .swatches button:active{transform:scale(.95)}
+
+/* ===== Tinted frost, vivid (round three) =====
+   Intentional departure from stock Sea Glass tokens: tinted fill, brighter specular rim, stronger saturation. */
+:root{
+--sf-material-regular-saturation:1.8;--sf-material-clear-saturation:1.5;
+--rim:rgba(255,255,255,.92);
+--sf-glass-fill:linear-gradient(145deg,hsl(var(--sf-hue) 95% 91% / .44),hsl(calc(var(--sf-hue) + 45) 90% 88% / .22));
+--sf-glass-reflection:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.02) 55%,rgba(255,255,255,.08));
+--sf-shadow:0 22px 44px -24px rgba(30,45,90,.55),inset 0 0 0 1px var(--rim),inset 0 2px 5px rgba(255,255,255,.6),inset 0 -8px 16px -8px hsl(var(--sf-hue) 60% 50% / .28);
+--sf-selection:linear-gradient(145deg,hsl(var(--sf-hue) 98% 84% / .92),hsl(calc(var(--sf-hue) + 25) 90% 74% / .82));
+--card:linear-gradient(145deg,hsl(var(--sf-hue) 95% 93% / .55),hsl(calc(var(--sf-hue) + 45) 90% 90% / .32));
+--chip-shadow:inset 0 0 0 1px var(--rim),inset 0 2px 4px rgba(255,255,255,.5),0 8px 20px -16px rgba(30,45,90,.45)}
+[data-sf-theme="dark"]{
+--rim:rgba(255,255,255,.34);
+--sf-glass-fill:linear-gradient(145deg,hsl(var(--sf-hue) 62% 42% / .5),hsl(calc(var(--sf-hue) + 45) 56% 30% / .4));
+--sf-shadow:0 22px 44px -24px rgba(0,0,0,.65),inset 0 0 0 1px var(--rim),inset 0 2px 5px rgba(255,255,255,.16),inset 0 -8px 16px -8px hsl(var(--sf-hue) 70% 60% / .22);
+--sf-selection:linear-gradient(145deg,hsl(var(--sf-hue) 80% 62% / .6),hsl(calc(var(--sf-hue) + 25) 70% 50% / .5));
+--card:linear-gradient(145deg,hsl(var(--sf-hue) 52% 38% / .55),hsl(calc(var(--sf-hue) + 45) 46% 28% / .42));
+--chip-shadow:inset 0 0 0 1px var(--rim),inset 0 2px 4px rgba(255,255,255,.12),0 8px 20px -16px rgba(0,0,0,.6)}
+
+/* vivid orbs that follow the accent hue */
+body::after{background:radial-gradient(circle at 78% 20%,hsl(var(--sf-hue) 92% 72% / .85) 0 12%,transparent 12.4%),
+radial-gradient(circle at 10% 52%,hsl(calc(var(--sf-hue) + 117) 85% 80% / .85) 0 14%,transparent 14.4%),
+radial-gradient(circle at 62% 90%,hsl(calc(var(--sf-hue) - 55) 75% 74% / .8) 0 10%,transparent 10.4%)}
+[data-sf-theme="dark"] body::after{background:radial-gradient(circle at 78% 20%,hsl(var(--sf-hue) 85% 52% / .85) 0 12%,transparent 12.4%),
+radial-gradient(circle at 10% 52%,hsl(calc(var(--sf-hue) + 117) 78% 50% / .8) 0 14%,transparent 14.4%),
+radial-gradient(circle at 62% 90%,hsl(calc(var(--sf-hue) - 55) 72% 46% / .75) 0 10%,transparent 10.4%)}
+
+/* rim and tint on surfaces that are not .sf-glass */
+.card.sf-card{border-radius:26px}
+.hero{background:linear-gradient(145deg,hsl(var(--sf-hue) 98% 80% / .62),hsl(calc(var(--sf-hue) + 40) 90% 78% / .44));
+-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);color:var(--sf-ink-strong);box-shadow:var(--sf-shadow)}
+[data-sf-theme="dark"] .hero{background:linear-gradient(145deg,hsl(var(--sf-hue) 85% 56% / .55),hsl(calc(var(--sf-hue) + 40) 80% 44% / .45))}
+.hero .row{border-top-color:var(--line)}
+.mini,.mk,.dr,.sw,.chip,.tgs .tg,.dn button,.mx,.btn.gh{box-shadow:var(--chip-shadow)}
+.mini,.mk{border-radius:18px}
+.btn{box-shadow:0 10px 26px -19px hsl(var(--sf-hue) 58% 33% / .6),inset 0 0 0 1px var(--rim),inset 0 1px 3px rgba(255,255,255,.5)}
+.mod{box-shadow:var(--sf-shadow)}
+#tip{box-shadow:var(--sf-shadow)}
+.tgs .tg.on,.chip.on,.sw button.on,.nav button.on,.gear.on{box-shadow:inset 0 0 0 1px var(--rim),inset 0 1px 2px rgba(255,255,255,.6)}
+/* device asked for less transparency and glass is not forced: solid, readable surfaces */
+@media(prefers-reduced-transparency:reduce){
+:root:not([data-glass="on"]){--card:#eef2f8;--chip-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 8px 20px -16px rgba(30,45,90,.35)}
+[data-sf-theme="dark"]:not([data-glass="on"]){--card:#263449;--chip-shadow:inset 0 0 0 1px rgba(255,255,255,.2),0 8px 20px -16px rgba(0,0,0,.6)}
+:root:not([data-glass="on"]) .hero{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--sf-accent-fill)}
+[data-sf-theme="dark"]:not([data-glass="on"]) .hero{color:var(--on-accent)}}
