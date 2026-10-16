@@ -20,6 +20,10 @@ function pref(){try{return localStorage.getItem('health-theme')||'auto'}catch(e)
 function s(){var p=pref();r.setAttribute('data-sf-theme',p==='auto'?(m.matches?'dark':'light'):p)}
 function g(){var v='';try{v=localStorage.getItem('health-glass')||''}catch(e){}v==='on'?r.setAttribute('data-glass','on'):r.removeAttribute('data-glass')}
 window.setGlass=function(v){try{v==='on'?localStorage.setItem('health-glass','on'):localStorage.removeItem('health-glass')}catch(e){}g()};g();
+function bg(){var v='';try{v=localStorage.getItem('health-bg')||''}catch(e){}v==='soft'||v==='plain'?r.setAttribute('data-bg',v):r.removeAttribute('data-bg')}
+function hue(){var h='';try{h=localStorage.getItem('health-hue')||''}catch(e){}h?r.style.setProperty('--sf-hue',h):r.style.removeProperty('--sf-hue')}
+window.setBg=function(v){try{v==='soft'||v==='plain'?localStorage.setItem('health-bg',v):localStorage.removeItem('health-bg')}catch(e){}bg()};
+window.setHue=function(h){try{h&&h!=='215'?localStorage.setItem('health-hue',h):localStorage.removeItem('health-hue')}catch(e){}hue()};bg();hue();
 window.setTheme=function(p){try{p==='auto'?localStorage.removeItem('health-theme'):localStorage.setItem('health-theme',p)}catch(e){}s()};
 s();m.addEventListener&&m.addEventListener('change',s)})();
 </script>
@@ -27,7 +31,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/sea-glass.css?v=1">
-<link rel="stylesheet" href="assets/health.css?v=7">
+<link rel="stylesheet" href="assets/health.css?v=8">
 <script defer src="assets/sea-glass.js?v=1"></script>
 </head>
 <body class="sf-app">
@@ -258,6 +262,12 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
     <div class="sw" id="glSw" role="group" aria-labelledby="glLb" style="margin-bottom:8px">
       <button type="button" data-g="auto">Auto</button><button type="button" data-g="on">On</button></div>
     <div class="ftot">Auto follows your device's transparency setting. On always shows frosted glass.</div>
+    <div class="fl" style="margin:14px 0 6px"><label id="bgLb">Background</label></div>
+    <div class="sw" id="bgSw" role="group" aria-labelledby="bgLb" style="margin-bottom:8px">
+      <button type="button" data-b="orbs">Orbs</button><button type="button" data-b="soft">Soft</button><button type="button" data-b="plain">Plain</button></div>
+    <div class="fl" style="margin:14px 0 8px"><label id="hLb">Accent color</label></div>
+    <div class="swatches" id="hueSw" role="group" aria-labelledby="hLb">
+      <button type="button" data-h="215" aria-label="Blue" style="--c:215"></button><button type="button" data-h="150" aria-label="Green" style="--c:150"></button><button type="button" data-h="265" aria-label="Violet" style="--c:265"></button><button type="button" data-h="335" aria-label="Rose" style="--c:335"></button></div>
   </div>
 
   <div class="card sf-card sf-glass">
@@ -1345,7 +1355,12 @@ function go(name){
   if(name==='settings')settingsFill()}
 function themePref(){try{return localStorage.getItem('health-theme')||'auto'}catch(e){return 'auto'}}
 function glassPref(){try{return localStorage.getItem('health-glass')==='on'?'on':'auto'}catch(e){return 'auto'}}
+function bgPref(){try{var v=localStorage.getItem('health-bg');return v==='soft'||v==='plain'?v:'orbs'}catch(e){return 'orbs'}}
+function huePref(){try{return localStorage.getItem('health-hue')||'215'}catch(e){return '215'}}
 function settingsFill(){
+  var bp=bgPref(),hp=huePref();
+  document.querySelectorAll('#bgSw button').forEach(function(b){var on=b.dataset.b===bp;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+  document.querySelectorAll('#hueSw button').forEach(function(b){var on=b.dataset.h===hp;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
   var gp=glassPref();
   document.querySelectorAll('#glSw button').forEach(function(b){var on=b.dataset.g===gp;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
   var p=themePref();
@@ -1360,6 +1375,8 @@ document.getElementById('gear').onclick=function(){
   if(document.getElementById('p-settings').classList.contains('on'))document.querySelector('#nav button[data-p=today]').click();
   else go('settings')};
 document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+document.querySelectorAll('#bgSw button').forEach(function(b){b.onclick=function(){setBg(b.dataset.b);settingsFill()}});
+document.querySelectorAll('#hueSw button').forEach(function(b){b.onclick=function(){setHue(b.dataset.h);settingsFill()}});
 document.querySelectorAll('#glSw button').forEach(function(b){b.onclick=function(){setGlass(b.dataset.g);settingsFill()}});
 document.querySelectorAll('#thSw button').forEach(function(b){b.onclick=function(){setTheme(b.dataset.t);settingsFill()}});
 document.getElementById('gSave').onclick=function(){

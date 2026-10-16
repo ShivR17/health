@@ -6,7 +6,7 @@
 // and Gemini calls are never cached: stale health data would be worse than no
 // data, and a cached write would be a lie.
 
-const VERSION = "v13";
+const VERSION = "v14";
 const SHELL = `shell-${VERSION}`;
 
 const ASSETS = [
@@ -15,7 +15,7 @@ const ASSETS = [
   "./manifest.webmanifest",
   "./assets/sea-glass.css?v=1",
   "./assets/sea-glass.js?v=1",
-  "./assets/health.css?v=7",
+  "./assets/health.css?v=8",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",

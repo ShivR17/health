@@ -286,3 +286,13 @@ backdrop-filter:blur(var(--sf-surface-blur)) saturate(var(--sf-surface-saturatio
 :root{--sf-type-font:'Google Sans',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif}
 /* calories left reads first on the food card */
 #fLeft{font-size:15px;font-weight:620;color:var(--sf-ink-strong)}
+
+/* background choices */
+html[data-bg="soft"] body::after{display:none}
+html[data-bg="plain"] body::before,html[data-bg="plain"] body::after{display:none}
+.swatches{display:flex;gap:10px}
+.swatches button{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;touch-action:manipulation;
+background:linear-gradient(140deg,hsl(var(--c) 90% 88%),hsl(var(--c) 82% 66%));box-shadow:inset 0 1px rgba(255,255,255,.4),0 6px 14px -10px rgba(32,50,73,.5);
+transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}
+.swatches button.on{box-shadow:0 0 0 2px var(--sf-canvas),0 0 0 4px hsl(var(--c) 70% 38%)}
+.swatches button:active{transform:scale(.95)}
