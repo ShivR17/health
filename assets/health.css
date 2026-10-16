@@ -20,9 +20,22 @@ html{-webkit-text-size-adjust:100%;background:var(--sf-canvas)}
 body{margin:0;min-height:100dvh;color:var(--sf-ink);background:transparent;padding-bottom:var(--nav);
 font:400 15px/1.5 var(--sf-type-font);-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-background:radial-gradient(120% 55% at 10% -10%,var(--sf-ambient-a),transparent 62%),
-radial-gradient(90% 50% at 105% 22%,var(--sf-ambient-b),transparent 60%),
-radial-gradient(80% 45% at 0% 92%,var(--sf-ambient-b),transparent 65%),var(--sf-canvas)}
+background:radial-gradient(60% 38% at 8% 4%,hsl(var(--sf-hue) 90% 72% / .75),transparent 70%),
+radial-gradient(50% 34% at 96% 14%,hsl(calc(var(--sf-hue) + 70) 80% 76% / .7),transparent 70%),
+radial-gradient(55% 36% at 85% 58%,hsl(calc(var(--sf-hue) - 35) 85% 74% / .55),transparent 72%),
+radial-gradient(60% 40% at 6% 78%,hsl(calc(var(--sf-hue) + 35) 80% 76% / .6),transparent 70%),var(--sf-canvas)}
+/* crisp-edged orbs give the glass something real to blur */
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(circle at 80% 24%,hsl(var(--sf-hue) 95% 80% / .6) 0 9%,transparent 9.4%),
+radial-gradient(circle at 12% 60%,hsl(calc(var(--sf-hue) + 70) 90% 82% / .55) 0 12%,transparent 12.4%),
+radial-gradient(circle at 72% 88%,hsl(calc(var(--sf-hue) - 35) 90% 78% / .5) 0 8%,transparent 8.4%)}
+[data-sf-theme="dark"] body::before{background:radial-gradient(60% 38% at 8% 4%,hsl(var(--sf-hue) 80% 40% / .8),transparent 70%),
+radial-gradient(50% 34% at 96% 14%,hsl(calc(var(--sf-hue) + 70) 70% 38% / .7),transparent 70%),
+radial-gradient(55% 36% at 85% 58%,hsl(calc(var(--sf-hue) - 35) 75% 36% / .6),transparent 72%),
+radial-gradient(60% 40% at 6% 78%,hsl(calc(var(--sf-hue) + 35) 70% 38% / .6),transparent 70%),var(--sf-canvas)}
+[data-sf-theme="dark"] body::after{background:radial-gradient(circle at 80% 24%,hsl(var(--sf-hue) 85% 52% / .85) 0 9%,transparent 9.4%),
+radial-gradient(circle at 12% 60%,hsl(calc(var(--sf-hue) + 70) 75% 50% / .8) 0 12%,transparent 12.4%),
+radial-gradient(circle at 72% 88%,hsl(calc(var(--sf-hue) - 35) 80% 46% / .75) 0 8%,transparent 8.4%)}
 h1,h2,h3{margin:0;color:var(--sf-ink-strong);line-height:1.18}
 h2{font-size:26px;font-weight:650;letter-spacing:-.03em;margin-bottom:6px}
 p{margin:0 0 10px}
@@ -234,8 +247,8 @@ transition:background var(--sf-motion-normal) var(--sf-motion-ease),color var(--
 .g2{grid-template-columns:repeat(4,1fr)}.scrim{align-items:center;padding:20px}.mod{border-radius:var(--sf-radius-xl)}.grab{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;scroll-behavior:auto!important}
 .panel.on,.mod{animation:none}}
-@media(prefers-reduced-transparency:reduce){.mod,#tip,.scrim{-webkit-backdrop-filter:none;backdrop-filter:none}
-.mod,#tip{background:var(--sf-canvas)}.scrim{background:rgba(42,55,75,.6)}}
+@media(prefers-reduced-transparency:reduce){:root:not([data-glass="on"]) .mod,:root:not([data-glass="on"]) #tip,:root:not([data-glass="on"]) .scrim{-webkit-backdrop-filter:none;backdrop-filter:none}
+:root:not([data-glass="on"]) .mod,:root:not([data-glass="on"]) #tip{background:var(--sf-canvas)}:root:not([data-glass="on"]) .scrim{background:rgba(42,55,75,.6)}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.mod,#tip{background:var(--sf-canvas)}}
 @media(forced-colors:active){.btn,.nav button.on,.sw button.on,.chip.on,.tgs .tg.on{border:1px solid CanvasText}}
 #mb button{min-height:44px}
@@ -261,3 +274,10 @@ transition:background var(--sf-motion-normal) var(--sf-motion-ease)}
 @media(max-width:440px){.bd span{display:none}}
 .bd{font-size:20px}
 .eyebrow{font-size:17px}
+
+/* Settings > Glass effects > On: the user's explicit choice overrides the device's reduce-transparency preference */
+@media(prefers-reduced-transparency:reduce){
+html[data-glass="on"] .sf-app .sf-glass,html[data-glass="on"] .sf-app .sf-glass-quiet{
+background:var(--sf-glass-reflection),var(--sf-glass-fill)!important;
+-webkit-backdrop-filter:blur(var(--sf-surface-blur)) saturate(var(--sf-surface-saturation))!important;
+backdrop-filter:blur(var(--sf-surface-blur)) saturate(var(--sf-surface-saturation))!important}}
