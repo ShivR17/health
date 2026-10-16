@@ -31,7 +31,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/sea-glass.css?v=1">
-<link rel="stylesheet" href="assets/health.css?v=9">
+<link rel="stylesheet" href="assets/health.css?v=10">
 <script defer src="assets/sea-glass.js?v=1"></script>
 </head>
 <body class="sf-app">
@@ -47,6 +47,16 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 
 <!-- ============ TODAY ============ -->
 <div class="panel on" id="p-today">
+  <div class="hero">
+    <div class="lb" id="gLb">Engagement · 9 Dec 2026</div>
+    <div class="big" id="cd1">—<small>days</small></div>
+    <div class="row">
+      <div><div class="k">Target</div><div class="v" id="gT">75.5 kg</div></div>
+      <div><div class="k">Wedding</div><div class="v" id="cd2">—</div></div>
+      <div><div class="k">Then</div><div class="v" id="gW">72 kg</div></div>
+    </div>
+  </div>
+
   <div class="card sf-card sf-glass" id="food">
     <h3 class="eyebrow"><span data-ic="food"></span>Food today<span class="tag tg2" id="fStat" style="margin-left:auto">No entries</span></h3>
     <div class="kcal" id="fKc" style="margin-bottom:4px">0 <span>/ 1950 kcal</span></div>
@@ -59,18 +69,8 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
       <button class="btn gh sm" type="button" data-retry style="flex:none">Retry</button></div>
     <div id="fList"></div>
     <div class="note" id="fTip" style="display:none"></div>
-    <div class="fin"><textarea id="fIn" rows="2" maxlength="1000" placeholder="Lunch: 2 rotis, chicken tikka, dahi"></textarea>
+    <div class="fin"><textarea id="fIn" rows="1" maxlength="1000" placeholder="Lunch: 2 rotis, chicken tikka, dahi"></textarea>
       <button class="btn" type="button" id="fAdd">Add</button></div>
-  </div>
-
-  <div class="hero">
-    <div class="lb" id="gLb">Engagement · 9 Dec 2026</div>
-    <div class="big" id="cd1">—<small>days</small></div>
-    <div class="row">
-      <div><div class="k">Target</div><div class="v" id="gT">75.5 kg</div></div>
-      <div><div class="k">Wedding</div><div class="v" id="cd2">—</div></div>
-      <div><div class="k">Then</div><div class="v" id="gW">72 kg</div></div>
-    </div>
   </div>
 
   <div class="act">
@@ -85,17 +85,17 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
     <div class="mini"><div class="k">To go</div><div class="v" id="mTogo">9.5</div><div class="d" id="gTg">kg to 72</div></div>
   </div>
 
-  <div class="card sf-card sf-glass">
-    <h3 class="eyebrow"><span data-ic="target"></span>The three that matter</h3>
+  <details class="card sf-card sf-glass fold">
+    <summary class="eyebrow"><span data-ic="target"></span>The three that matter<span class="chev" aria-hidden="true"></span></summary>
     <div class="rule"><span data-ic="drop"></span><div><b>Visceral fat 11.0 → 8</b><br>Fat around the organs. Drives risk more than weight does.</div></div>
     <div class="rule"><span data-ic="chart"></span><div><b>HOMA-IR 2.3 → under 2.0</b><br>Early insulin resistance. Fat loss is the direct fix.</div></div>
     <div class="rule"><span data-ic="ruler"></span><div><b>Waist 36" → 34"</b><br>Best home proxy for visceral fat. Measure at the navel.</div></div>
-  </div>
+  </details>
 
-  <div class="card sf-card sf-glass">
-    <h3 class="eyebrow"><span data-ic="bulb"></span>Why this plan</h3>
+  <details class="card sf-card sf-glass fold">
+    <summary class="eyebrow"><span data-ic="bulb"></span>Why this plan<span class="chev" aria-hidden="true"></span></summary>
     <p style="font-size:14px;color:var(--sf-ink);margin:0">You gained 3.3 kg of fat since December, and about half the June–September jump was real muscle regain. Thyroid, liver, kidneys and iron are all clean, so nothing is blocking fat loss. LDL 139 and non-HDL 153 are above target, and with borderline Lp(a) they matter more for you than average. Fix the diet and everything else follows.</p>
-  </div>
+  </details>
 </div>
 
 <!-- ============ PLAN ============ -->
@@ -320,6 +320,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 </div>
 
 <nav class="nav sf-glass" data-sf-material="regular" id="nav" aria-label="Sections">
+  <i class="lens" aria-hidden="true"></i>
   <button data-p="today" class="on"><span data-ic="home"></span>Today</button>
   <button data-p="plan"><span data-ic="list"></span>Plan</button>
   <button data-p="track"><span data-ic="plus"></span>Log</button>
@@ -897,6 +898,10 @@ document.querySelectorAll('#nav button').forEach(function(b){b.onclick=function(
   document.querySelectorAll('.panel').forEach(function(z){z.classList.remove('on')});
   document.getElementById('gear').classList.remove('on');b.classList.add('on');document.getElementById('p-'+b.dataset.p).classList.add('on');
   scrollTo(0,0);if(b.dataset.p==='data'){draw();window.nChart&&nChart()}}});
+(function(){var nv=document.getElementById('nav'),ln=nv.querySelector('.lens');
+  function mv(){var b=nv.querySelector('button.on');if(!b||!b.offsetWidth)return;ln.style.width=b.offsetWidth+'px';ln.style.height=b.offsetHeight+'px';
+    ln.style.transform='translate('+b.offsetLeft+'px,'+b.offsetTop+'px)';nv.classList.add('has-lens')}
+  new MutationObserver(mv).observe(nv,{attributes:true,attributeFilter:['class'],subtree:true});addEventListener('resize',mv);requestAnimationFrame(mv)})();
 today();draw();paint();persist();
 document.getElementById('authbtn').onclick=function(){
   if(!SB){alert('Cloud is not loaded. Check your connection and reload.');return}
@@ -1007,22 +1012,27 @@ function foodAuth(){
     mPut();foodAll()})
    .catch(function(){STALE=true;foodAll()})}
 
+var KC0=0;
+function countUp(el,to){var from=KC0;KC0=to;if(!el||from===to||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var t0=performance.now();(function f(n){var k=Math.min(1,(n-t0)/560),e=1-Math.pow(1-k,4);el.textContent=fmt(Math.round(from+(to-from)*e));if(k<1)requestAnimationFrame(f)})(t0)}
+function hit(id,v,t){var m=document.getElementById(id).closest('.mac');if(m)m.classList.toggle('hit',t>0&&v>=t)}
 function bar(id,v,t){document.getElementById(id).style.width=Math.min(100,t?v*100/t:0)+'%'}
+var SEEN={};
 function mealList(L,id){var b=document.getElementById(id);b.innerHTML='';
-  L.forEach(function(m){var e=document.createElement('button');e.type='button';e.className='ml';
+  L.forEach(function(m){var e=document.createElement('button');e.type='button';var sk=m.description+'|'+m.kcal+'|'+m.meal;e.className='ml'+(SEEN[sk]?'':' in');SEEN[sk]=1;
     e.innerHTML='<span class="k">'+(MT[m.meal]||(isFast(m)?'Fast':'Meal'))+'</span><span class="d">'+esc(m.description)+
       '</span><span class="v">'+fmt(m.kcal)+'</span>';
     e.onclick=function(){mealSheet(m,false)};b.appendChild(e)})}
 function foodToday(){
   var L=dayOf(ist()),t=sum(L),left=NT.kcal-t.kcal,st=document.getElementById('fStat');
-  document.getElementById('fKc').innerHTML=fmt(t.kcal)+' <span>/ '+fmt(NT.kcal)+' kcal</span>';
+  document.getElementById('fKc').innerHTML='<b class="cu">'+fmt(t.kcal)+'</b> <span>/ '+fmt(NT.kcal)+' kcal</span>';countUp(document.querySelector('#fKc .cu'),t.kcal);
   st.className='tag '+(!L.length?'tg2':left>=0?'to':'ta');
   st.textContent=!L.length?'No entries':left>=0?'Within budget so far':'Over budget';
   document.getElementById('fLeft').textContent=!USER?'Sign in to log food.':
     left>=0?fmt(left)+' kcal left':'Over by '+fmt(-left)+' kcal';
   bar('fBk',t.kcal,NT.kcal);document.getElementById('fBk').style.background=left<0?'var(--red)':'var(--teal)';
-  document.getElementById('fP').textContent=t.protein_g+' / '+NT.protein_g+' g';bar('fBp',t.protein_g,NT.protein_g);
-  document.getElementById('fF').textContent=t.fibre_g+' / '+NT.fibre_g+' g';bar('fBf',t.fibre_g,NT.fibre_g);
+  document.getElementById('fP').textContent=t.protein_g+' / '+NT.protein_g+' g';bar('fBp',t.protein_g,NT.protein_g);hit('fBp',t.protein_g,NT.protein_g);
+  document.getElementById('fF').textContent=t.fibre_g+' / '+NT.fibre_g+' g';bar('fBf',t.fibre_g,NT.fibre_g);hit('fBf',t.fibre_g,NT.fibre_g);
   document.getElementById('fCF').textContent='Carbs '+fmt(t.carbs_g)+' g · Fat '+fmt(t.fat_g)+' g';
   mealList(L,'fList');
   document.getElementById('fErr').style.display=USER&&STALE?'flex':'none';

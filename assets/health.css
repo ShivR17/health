@@ -296,3 +296,52 @@ background:linear-gradient(140deg,hsl(var(--c) 90% 88%),hsl(var(--c) 82% 66%));b
 transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}
 .swatches button.on{box-shadow:0 0 0 2px var(--sf-canvas),0 0 0 4px hsl(var(--c) 70% 38%)}
 .swatches button:active{transform:scale(.95)}
+
+/* ===== Impeccable refine (branch ui/impeccable-refine) ===== */
+/* Phase 1: layout. Compact hero, folded reference cards, compact composer */
+.hero{padding:18px 20px}
+.hero .big{font-size:clamp(40px,12vw,54px);margin:4px 0 2px}
+.hero .row{margin-top:12px;padding-top:12px}
+details.fold{padding:0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;padding:14px 20px;margin:0}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold[open]>summary{padding-bottom:6px}
+details.fold>:not(summary){margin-left:20px;margin-right:20px}
+details.fold>:last-child{margin-bottom:18px}
+details.fold .chev{margin-left:auto;width:8px;height:8px;border-right:2px solid var(--sf-muted);border-bottom:2px solid var(--sf-muted);transform:rotate(45deg) translateY(-2px);transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}
+details.fold[open] .chev{transform:rotate(-135deg) translateY(-2px)}
+.fin textarea{min-height:48px;height:48px;resize:none;transition:height var(--sf-motion-normal) var(--sf-motion-ease)}
+.fin:focus-within textarea,.fin textarea:not(:placeholder-shown){height:92px}
+.fin .btn{height:48px}
+
+/* Phase 2: type. Larger, lighter numerals; steadier labels; balanced wraps */
+h2,h3,.act h2{text-wrap:balance}
+p,.rule,.note{text-wrap:pretty}
+.kcal{font-size:40px;font-weight:500;letter-spacing:-.04em;line-height:1.05}
+.kcal span{font-size:15px;font-weight:500;letter-spacing:0;color:var(--sf-muted)}
+.hero .big{font-weight:500}
+.hero .row .v,.mini .v{font-weight:500}
+.hero .lb,.mini .k,.mac .h span,.hero .row .k{letter-spacing:.01em}
+.mini .v{font-size:28px}
+.ml .v,.kv span:last-child{font-variant-numeric:tabular-nums}
+::selection{background:hsl(var(--sf-hue) 80% 78%);color:var(--sf-ink-strong)}
+textarea,input{caret-color:var(--teal)}
+a{text-underline-offset:3px}
+
+/* Phase 3: motion. One authored moment: staggered card entrance. Confirming motion elsewhere. */
+.panel.on{animation:none}
+.panel.on>*{animation:rise var(--sf-motion-spatial) var(--sf-motion-ease) both}
+.panel.on>:nth-child(2){animation-delay:40ms}.panel.on>:nth-child(3){animation-delay:80ms}
+.panel.on>:nth-child(4){animation-delay:120ms}.panel.on>:nth-child(5){animation-delay:160ms}
+.panel.on>:nth-child(n+6){animation-delay:200ms}
+.nav{isolation:isolate}
+.nav .lens{position:absolute;z-index:-1;top:0;left:0;border-radius:999px;background:var(--sf-selection);box-shadow:inset 0 1px rgba(255,255,255,.32);
+pointer-events:none;transition:transform var(--sf-motion-spatial) var(--sf-motion-ease),width var(--sf-motion-spatial) var(--sf-motion-ease)}
+.nav.has-lens button.on{background:none;box-shadow:none}
+@keyframes mealin{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.ml.in{animation:mealin var(--sf-motion-spatial) var(--sf-motion-ease) both}
+.mac.hit .bar{box-shadow:0 5px 12px -7px var(--teal)}
+.mac.hit .h b{color:var(--green)}
+.kcal .cu{font-weight:inherit}
+.bar i{transition:width var(--sf-motion-reveal) var(--sf-motion-ease)}
+@media(prefers-reduced-motion:reduce){.panel.on>*,.ml.in{animation:none}.nav .lens{transition:none}}
