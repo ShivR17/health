@@ -1,257 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-sf-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FBFAF7">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151d2a" media="(prefers-color-scheme: dark)">
 <title>Shivam Rathi — Health Plan</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#14605A">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2">
 <link rel="icon" href="icons/favicon-32.png?v=2" sizes="32x32">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Health">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
---paper:#FBFAF7;--card:#FFF;--ink:#132523;--ink2:#3E534F;--muted:#79908B;--line:#E6E4DC;
---teal:#14605A;--tealS:#E7F0EE;--tealM:#5A9A91;--amber:#B4702C;--amberS:#FBF1E6;
---red:#A8452F;--redS:#FBECE8;--green:#2E7D5B;--greenS:#E8F3EC;
---nav:calc(60px + env(safe-area-inset-bottom));}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 'Inter',system-ui,sans-serif;
--webkit-font-smoothing:antialiased;padding-bottom:var(--nav)}
-h1,h2,h3{font-family:'Inter Tight',sans-serif;margin:0;letter-spacing:-.02em;line-height:1.18}
-p{margin:0 0 10px}
-svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
-
-.top{position:sticky;top:0;z-index:50;background:rgba(251,250,247,.95);backdrop-filter:blur(12px);
-border-bottom:1px solid var(--line);padding:11px 16px;display:flex;align-items:center;gap:10px}
-.bd{font-family:'Inter Tight';font-weight:700;font-size:14px}
-.bd span{color:var(--teal);font-weight:500}
-.day{margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.04em}
-
-.wrap{max-width:820px;margin:0 auto;padding:20px 16px 30px}
-.panel{display:none}.panel.on{display:block}
-h2{font-size:23px;font-weight:600;margin-bottom:7px}
-.sub{color:var(--ink2);font-size:14px;margin-bottom:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
-.eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tealM);font-weight:700;
-display:flex;align-items:center;gap:6px;margin-bottom:8px}
-.eyebrow svg.i{width:14px;height:14px}
-
-/* today */
-.hero{background:var(--ink);color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}
-.hero .lb{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;opacity:.65;font-weight:700}
-.hero .big{font-family:'Inter Tight';font-size:46px;font-weight:700;letter-spacing:-.04em;line-height:1;margin:8px 0 4px}
-.hero .big small{font-size:14px;font-weight:500;opacity:.7;letter-spacing:0;margin-left:6px}
-.hero .row{display:flex;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15)}
-.hero .row div{flex:1}
-.hero .row .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;font-weight:700}
-.hero .row .v{font-family:'Inter Tight';font-size:19px;font-weight:600;margin-top:2px}
-
-.act{border-left:3px solid var(--teal);background:var(--tealS);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px}
-.act h3{font-size:15px;font-weight:600;margin-bottom:3px}
-.act p{font-size:13.5px;color:var(--ink2);margin:0}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px}
-.mini .k{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.mini .v{font-family:'Inter Tight';font-size:22px;font-weight:600;letter-spacing:-.03em;margin-top:2px}
-.mini .d{font-size:11.5px;color:var(--ink2)}
-.up{color:var(--red)}.down{color:var(--green)}
-
-.rule{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--ink2)}
-.rule:last-child{border-bottom:none}
-.rule svg.i{width:17px;height:17px;color:var(--tealM);margin-top:2px}
-.rule b{color:var(--ink);font-weight:600}
-
-/* nutrition */
-.sw{display:flex;background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:3px;margin-bottom:14px}
-.sw button{flex:1;border:none;background:none;border-radius:100px;padding:10px;font:600 13px 'Inter';color:var(--ink2);min-height:42px}
-.sw button.on{background:var(--teal);color:#fff}
-.kcal{font-family:'Inter Tight';font-size:31px;font-weight:700;letter-spacing:-.03em;margin-bottom:13px}
-.kcal span{font-size:13px;font-weight:500;color:var(--muted)}
-.mac{margin-bottom:11px}
-.mac .h{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
-.mac .h b{font-family:'Inter Tight'}
-.bar{height:8px;border-radius:5px;background:#EFEEE8;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:5px;transition:width .3s}
-
-/* timeline */
-.step{border-bottom:1px solid var(--line)}
-.step:last-child{border-bottom:none}
-.sh{width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;padding:14px 0;
-display:flex;align-items:center;gap:10px;min-height:48px}
-.sw2{font:700 10px 'Inter Tight';letter-spacing:.04em;color:var(--teal);background:var(--tealS);border-radius:6px;padding:4px 7px;white-space:nowrap}
-.step.fest .sw2{background:var(--amberS);color:var(--amber)}
-.st{font:600 14.5px 'Inter Tight'}
-.sh svg.i{margin-left:auto;color:var(--muted);transition:transform .2s}
-.step.open .sh svg.i{transform:rotate(180deg)}
-.sb{display:none;padding-bottom:12px}
-.step.open .sb{display:block}
-.sb div{font-size:13.5px;color:var(--ink2);padding:5px 0 5px 14px;border-left:2px solid var(--line);margin-bottom:3px}
-
-/* forms: one font and size for every field (browsers do not inherit it) */
-input,select,textarea{font:500 16px/1.4 'Inter',system-ui,sans-serif;color:var(--ink);letter-spacing:0}
-::placeholder{color:var(--muted);font-weight:400;opacity:1}
-input[type=date]{-webkit-appearance:none;appearance:none;text-align:left}
-input[type=date]::-webkit-date-and-time-value{text-align:left}
-.fl{margin-bottom:11px}
-.fl label{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
-.fl input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:500 16px/1.4 'Inter',system-ui,sans-serif;
-background:var(--card);color:var(--ink);min-height:48px}
-.fl input:focus{outline:2px solid var(--tealM);outline-offset:1px;border-color:transparent}
-.fl textarea,.fl select,.fin textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:500 16px/1.4 'Inter',system-ui,sans-serif;
-background:var(--card);color:var(--ink);min-height:48px}
-.fl textarea,.fin textarea{resize:vertical;line-height:1.4}
-/* food */
-.rmr{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;font-weight:600}
-.rmr small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
-.tg{flex:none;width:52px;height:32px;border-radius:99px;border:none;background:var(--line);position:relative;cursor:pointer;transition:background .2s}
-.tg i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
-.tg[aria-checked=true]{background:var(--teal)}.tg[aria-checked=true] i{left:23px}
-.tg:disabled{opacity:.5}
-.fin{display:flex;gap:8px;margin-top:12px;align-items:stretch}
-.fin textarea{flex:1;min-height:52px}
-.fin .btn{width:auto;padding:0 18px}
-.ml{display:flex;gap:10px;align-items:center;padding:10px 0;border:0;border-bottom:1px solid var(--line);width:100%;
-background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;min-height:44px}
-.ml .k{font:700 9.5px 'Inter';text-transform:uppercase;color:var(--muted);letter-spacing:.06em;width:64px;flex:none}
-.ml .d{flex:1;min-width:0;font-size:13.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ml .v{font:600 14px 'Inter Tight';white-space:nowrap}
-.dn{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.dn input{flex:1;border:1px solid var(--line);border-radius:11px;padding:10px;font:500 16px/1.4 'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);min-height:44px}
-.dn button{border:1px solid var(--line);background:var(--card);border-radius:11px;width:44px;height:44px;display:grid;place-items:center;color:var(--ink2);cursor:pointer}
-.ftot{font-size:12.5px;color:var(--ink2);margin:2px 0 8px}
-.lnk{border:none;background:none;color:var(--teal);font:600 13px 'Inter';padding:8px 0;cursor:pointer}
-.f3{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.up{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.uph{font-size:11.5px;color:var(--muted);margin:8px 0 13px;line-height:1.45}
-.spin{width:26px;height:26px;border:2.5px solid var(--line);border-top-color:var(--teal);
-border-radius:50%;margin:0 auto;animation:sp .8s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-.cf{max-height:52vh;overflow-y:auto;margin:0 -2px;padding:0 2px}
-.cf .fl{margin-bottom:9px}
-.cf .fl label{display:flex;justify-content:space-between;align-items:baseline}
-.cf .fl label em{font-style:normal;text-transform:none;letter-spacing:0;color:var(--tealM);font-size:10px}
-.btn{border:none;background:var(--teal);color:#fff;border-radius:12px;padding:13px 18px;font:600 14.5px 'Inter';
-display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;cursor:pointer}
-.btn.gh{background:var(--card);color:var(--ink2);border:1px solid var(--line)}
-.btn.sm{width:auto;flex:1;padding:11px 14px;font-size:13px;min-height:44px}
-.acc{border-top:1px solid var(--line)}
-.ah{width:100%;background:none;border:none;font:600 13.5px 'Inter Tight';color:var(--ink);text-align:left;
-padding:14px 0;display:flex;align-items:center;gap:9px;min-height:48px;cursor:pointer}
-.ah svg.i:last-child{margin-left:auto;color:var(--muted);transition:transform .2s}
-.acc.open .ah svg.i:last-child{transform:rotate(180deg)}
-.ab{display:none;padding-bottom:10px}.acc.open .ab{display:block}
-
-#res{display:none;margin-top:14px}#res.on{display:block}
-.vc{border-radius:12px;padding:15px;display:flex;gap:11px;margin-bottom:11px}
-.vc b{font:600 15.5px 'Inter Tight';display:block;margin-bottom:2px}
-.vc p{font-size:13px;margin:0}
-.ok{background:var(--greenS);color:var(--green)}
-.mid{background:var(--amberS);color:var(--amber)}
-.bad{background:var(--redS);color:var(--red)}
-.dr{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:center;background:var(--card);
-border:1px solid var(--line);border-radius:11px;padding:10px 12px;font-size:12.5px;margin-bottom:7px}
-.dr .n{font-weight:600;color:var(--ink)}
-.dr .n em{display:block;font-style:normal;font-size:11px;color:var(--muted);font-weight:400}
-.dr .v{font:600 15px 'Inter Tight'}
-.dr .t{font-size:11px;font-weight:700;border-radius:100px;padding:3px 8px;white-space:nowrap}
-
-/* chart + markers */
-.tgs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.tgs::-webkit-scrollbar{display:none}
-.tg{border:1px solid var(--line);background:var(--paper);color:var(--ink2);border-radius:100px;padding:7px 12px;
-font:500 12px 'Inter';display:inline-flex;align-items:center;gap:6px;white-space:nowrap;min-height:36px;cursor:pointer}
-.tg.on{background:var(--teal);border-color:var(--teal);color:#fff}
-.tg i{width:8px;height:8px;border-radius:50%;display:block}
-svg.ch{display:block;width:100%;height:auto}
-.gl{stroke:var(--line);stroke-width:1}.ax{font:500 10px 'Inter';fill:var(--muted)}
-.chips{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.chips::-webkit-scrollbar{display:none}
-.chip{border:1px solid var(--line);background:var(--card);border-radius:100px;padding:8px 13px;font:500 12px 'Inter';
-color:var(--ink2);white-space:nowrap;min-height:38px;cursor:pointer}
-.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
-.bm{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.mk{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;
-font:inherit;color:inherit;cursor:pointer}
-.tag{font:700 9px 'Inter';letter-spacing:.05em;text-transform:uppercase;border-radius:100px;padding:3px 7px;display:inline-block}
-.ta{background:var(--redS);color:var(--red)}.tw{background:var(--amberS);color:var(--amber)}
-.to{background:var(--greenS);color:var(--green)}.tg2{background:#EEEDE7;color:var(--ink2)}
-.mk .n{font-size:11px;color:var(--ink2);font-weight:500;margin-top:6px;line-height:1.3;min-height:2.6em}
-.mk .v{font:600 20px 'Inter Tight';letter-spacing:-.03em;margin:3px 0}
-.mk .v s{font-size:10.5px;color:var(--muted);font-weight:500;text-decoration:none;margin-left:2px}
-.mini .v .u{font-size:12px;color:var(--muted);font-weight:500}
-.mk .v .u2{font-size:10.5px;color:var(--muted);font-weight:500;margin-left:2px}
-.rg{height:4px;border-radius:3px;background:#EFEEE8;overflow:hidden}
-.rg i{display:block;height:100%;border-radius:3px}
-
-table.t{width:100%;border-collapse:collapse;font-size:12.5px;min-width:430px}
-table.t th{text-align:left;font:700 9.5px 'Inter';letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
-padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap}
-table.t td{padding:9px 7px;border-bottom:1px solid var(--line);color:var(--ink2);white-space:nowrap}
-.sx{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.empty{text-align:center;color:var(--muted);font-size:13px;padding:18px}
-
-.scrim{position:fixed;inset:0;background:rgba(19,37,35,.45);display:none;z-index:100;align-items:flex-end;justify-content:center}
-.scrim.on{display:flex}
-.mod{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:480px;
-padding:20px 18px calc(24px + env(safe-area-inset-bottom));max-height:86vh;overflow:auto;position:relative}
-.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 14px}
-.mx{position:absolute;top:14px;right:14px;border:none;background:var(--paper);border-radius:50%;width:34px;height:34px;
-display:grid;place-items:center;color:var(--ink2);cursor:pointer}
-.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
-.kv:last-of-type{border-bottom:none}.kv span:first-child{color:var(--muted)}
-.kv span:last-child{font:600 13px 'Inter Tight';text-align:right}
-.note{background:var(--tealS);border-radius:11px;padding:12px;font-size:13px;color:var(--ink2);margin-top:12px}
-#tip{position:fixed;background:var(--ink);color:#fff;border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.5;
-opacity:0;pointer-events:none;transition:opacity .12s;z-index:110;max-width:200px}
-
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
-border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-.nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;
-color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-content:center;cursor:pointer}
-.nav button.on{color:var(--teal)}
-.nav button.on svg.i{stroke-width:2.1}
-:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:6px}
-@media(min-width:620px){.bm{grid-template-columns:repeat(4,1fr)}.mk .n{min-height:0}.f3{grid-template-columns:repeat(3,1fr)}
-.g2{grid-template-columns:repeat(4,1fr)}.scrim{align-items:center;padding:20px}.mod{border-radius:18px}.grab{display:none}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
+<script>
+/* follow the phone's light or dark setting before first paint */
+(function(){var m=matchMedia('(prefers-color-scheme: dark)'),r=document.documentElement;
+function pref(){try{return localStorage.getItem('health-theme')||'auto'}catch(e){return'auto'}}
+function s(){var p=pref();r.setAttribute('data-sf-theme',p==='auto'?(m.matches?'dark':'light'):p)}
+function g(){var v='';try{v=localStorage.getItem('health-glass')||''}catch(e){}v==='on'?r.setAttribute('data-glass','on'):r.removeAttribute('data-glass')}
+window.setGlass=function(v){try{v==='on'?localStorage.setItem('health-glass','on'):localStorage.removeItem('health-glass')}catch(e){}g()};g();
+function bg(){var v='';try{v=localStorage.getItem('health-bg')||''}catch(e){}v==='soft'||v==='plain'?r.setAttribute('data-bg',v):r.removeAttribute('data-bg')}
+function hue(){var h='';try{h=localStorage.getItem('health-hue')||''}catch(e){}h?r.style.setProperty('--sf-hue',h):r.style.removeProperty('--sf-hue')}
+window.setBg=function(v){try{v==='soft'||v==='plain'?localStorage.setItem('health-bg',v):localStorage.removeItem('health-bg')}catch(e){}bg()};
+window.setHue=function(h){try{h&&h!=='215'?localStorage.setItem('health-hue',h):localStorage.removeItem('health-hue')}catch(e){}hue()};bg();hue();
+window.setTheme=function(p){try{p==='auto'?localStorage.removeItem('health-theme'):localStorage.setItem('health-theme',p)}catch(e){}s()};
+s();m.addEventListener&&m.addEventListener('change',s)})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/sea-glass.css?v=1">
+<link rel="stylesheet" href="assets/health.css?v=9">
+<script defer src="assets/sea-glass.js?v=1"></script>
 </head>
-<body>
+<body class="sf-app">
+<a class="sf-skip-link" href="#main">Skip to content</a>
 
-<div class="top">
-  <div class="bd">Shivam Rathi <span>· Health Plan</span></div>
+<header class="top sf-glass-quiet" data-sf-scroll-glass>
+  <h1 class="bd">Shivam Rathi <span>· Health Plan</span></h1>
   <div class="day" id="day"></div>
-</div>
+  <button type="button" class="gear" id="gear" aria-label="Settings"><span data-ic="gear"></span><i class="hdot" id="hdot" aria-hidden="true"></i></button>
+</header>
 
-<div class="wrap">
+<main class="wrap" id="main">
 
 <!-- ============ TODAY ============ -->
 <div class="panel on" id="p-today">
-  <div class="hero">
-    <div class="lb">Engagement · 9 Dec 2026</div>
-    <div class="big" id="cd1">—<small>days</small></div>
-    <div class="row">
-      <div><div class="k">Target</div><div class="v">75.5 kg</div></div>
-      <div><div class="k">Wedding</div><div class="v" id="cd2">—</div></div>
-      <div><div class="k">Then</div><div class="v">72 kg</div></div>
-    </div>
-  </div>
-
-  <div class="act">
-    <h3 id="actH">This week</h3>
-    <p id="actP">Eat 1,950 kcal every day. 120 g protein and 25 g fibre. Lift 3×, cardio 1×, 9,000 steps. Take a clean morning weight and log it.</p>
-  </div>
-
-  <div class="card" id="food">
-    <div class="eyebrow"><span data-ic="food"></span>Food today<span class="tag tg2" id="fStat" style="margin-left:auto">No entries</span></div>
+  <div class="card sf-card sf-glass" id="food">
+    <h3 class="eyebrow"><span data-ic="food"></span>Food today<span class="tag tg2" id="fStat" style="margin-left:auto">No entries</span></h3>
     <div class="kcal" id="fKc" style="margin-bottom:4px">0 <span>/ 1950 kcal</span></div>
     <div class="ftot" id="fLeft"></div>
     <div class="mac"><div class="bar"><i id="fBk" style="background:var(--teal)"></i></div></div>
@@ -264,27 +61,40 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
     <div class="note" id="fTip" style="display:none"></div>
     <div class="fin"><textarea id="fIn" rows="2" maxlength="1000" placeholder="Lunch: 2 rotis, chicken tikka, dahi"></textarea>
       <button class="btn" type="button" id="fAdd">Add</button></div>
-    <div class="rmr"><span>Meal reminders<small id="rmMsg">2 pm breakfast and lunch · 9 pm dinner and snack</small></span>
-      <button type="button" role="switch" aria-checked="false" aria-label="Meal reminders" class="tg" id="rmTg"><i></i></button></div>
+  </div>
+
+  <div class="hero">
+    <div class="lb" id="gLb">Engagement · 9 Dec 2026</div>
+    <div class="big" id="cd1">—<small>days</small></div>
+    <div class="row">
+      <div><div class="k">Target</div><div class="v" id="gT">75.5 kg</div></div>
+      <div><div class="k">Wedding</div><div class="v" id="cd2">—</div></div>
+      <div><div class="k">Then</div><div class="v" id="gW">72 kg</div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <h2 id="actH">This week</h2>
+    <p id="actP">Eat 1,950 kcal every day. 120 g protein and 25 g fibre. Lift 3×, cardio 1×, 9,000 steps. Take a clean morning weight and log it.</p>
   </div>
 
   <div class="g2" style="margin-bottom:12px">
     <div class="mini"><div class="k">Start</div><div class="v">83.0<span class="u"> kg</span></div><div class="d">13 Sep</div></div>
     <div class="mini"><div class="k">Latest</div><div class="v" id="mLat">—</div><div class="d" id="mLatD">not logged</div></div>
     <div class="mini"><div class="k">Plan says</div><div class="v" id="mPlan">83.0</div><div class="d" id="mWk">week 0</div></div>
-    <div class="mini"><div class="k">To go</div><div class="v" id="mTogo">9.5</div><div class="d">kg to 72</div></div>
+    <div class="mini"><div class="k">To go</div><div class="v" id="mTogo">9.5</div><div class="d" id="gTg">kg to 72</div></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="target"></span>The three that matter</div>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="target"></span>The three that matter</h3>
     <div class="rule"><span data-ic="drop"></span><div><b>Visceral fat 11.0 → 8</b><br>Fat around the organs. Drives risk more than weight does.</div></div>
     <div class="rule"><span data-ic="chart"></span><div><b>HOMA-IR 2.3 → under 2.0</b><br>Early insulin resistance. Fat loss is the direct fix.</div></div>
     <div class="rule"><span data-ic="ruler"></span><div><b>Waist 36" → 34"</b><br>Best home proxy for visceral fat. Measure at the navel.</div></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="bulb"></span>Why this plan</div>
-    <p style="font-size:13.5px;color:var(--ink2);margin:0">You gained 3.3 kg of fat since December, and about half the June–September jump was real muscle regain. Thyroid, liver, kidneys and iron are all clean, so nothing is blocking fat loss. LDL 139 and non-HDL 153 are above target, and with borderline Lp(a) they matter more for you than average. Fix the diet and everything else follows.</p>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="bulb"></span>Why this plan</h3>
+    <p style="font-size:14px;color:var(--sf-ink);margin:0">You gained 3.3 kg of fat since December, and about half the June–September jump was real muscle regain. Thyroid, liver, kidneys and iron are all clean, so nothing is blocking fat loss. LDL 139 and non-HDL 153 are above target, and with borderline Lp(a) they matter more for you than average. Fix the diet and everything else follows.</p>
   </div>
 </div>
 
@@ -293,20 +103,18 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   <h2>Action plan</h2>
   <p class="sub">Same target every day. Protein and fibre fixed, carbs are the lever.</p>
 
-  <div class="card">
+  <div class="card sf-card sf-glass">
     <div class="kcal" id="kc"></div>
     <div class="kv"><span>Estimated TDEE</span><span id="kTd"></span></div>
     <div class="kv"><span>Protein</span><span id="kP"></span></div>
     <div class="kv"><span>Fibre</span><span id="kF"></span></div>
     <div class="kv"><span>Carbs and fat</span><span>Tracked, no target</span></div>
-    <button class="lnk" type="button" id="kEd">Edit targets</button>
-    <div class="kv" style="margin-top:6px"><span>Meal reminders<br><small style="color:var(--muted)">2 pm breakfast and lunch · 9 pm dinner and snack</small></span><span id="rmSt">Off</span></div>
-    <button class="lnk" type="button" id="rmBtn">Turn on reminders</button>
+    <button class="lnk" type="button" data-go="settings">Change targets and reminders in Settings</button>
     <div class="note">Protein at every meal — eggs, curd, dal, paneer, chicken, whey. Cut the rice and roti, never the dal or paneer. One meal out per week, counted.</div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="dumbbell"></span>Training</div>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="dumbbell"></span>Training</h3>
     <div class="rule"><span data-ic="dumbbell"></span><div><b>Lift 3× weekly</b>, heavy, loads unchanged. Main muscle-retention lever.</div></div>
     <div class="rule"><span data-ic="bolt"></span><div><b>Cardio 1×</b>, 30–40 min easy.</div></div>
     <div class="rule"><span data-ic="route"></span><div><b>9,000 steps</b> daily. Beats a second cardio session.</div></div>
@@ -314,24 +122,24 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
     <div class="rule"><span data-ic="pause"></span><div><b>If fatigued</b>, cut sets — never the weight on the bar.</div></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="flask"></span>Medical follow-up</div>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="flask"></span>Medical follow-up</h3>
     <div class="rule"><span data-ic="sun"></span><div><b>Vitamin D 21.4</b> — insufficient. Ask about a correction dose, recheck at 12 weeks.</div></div>
     <div class="rule"><span data-ic="pill"></span><div><b>B12 214, folate 5.11</b> — low-normal, likely driving homocysteine 18.7.</div></div>
     <div class="rule"><span data-ic="labs"></span><div><b>Next panel:</b> fasting lipids, ApoB, hsCRP, fasting insulin, HbA1c, Vit D, B12, homocysteine, total and free testosterone.</div></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="route"></span>Milestones</div>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="route"></span>Milestones</h3>
     <div id="tl"></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="calendar"></span>Where you land</div>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="calendar"></span>Where you land</h3>
     <div class="kv"><span>9 Dec · Engagement</span><span>75.5–76 kg · 18.5–19% · 34"</span></div>
     <div class="kv"><span>3 Feb · Wedding</span><span>72–72.5 kg · 15–16% · 32–33"</span></div>
     <div class="kv"><span>Steady state after</span><span>73–75 kg · 16–18%</span></div>
-    <p style="font-size:13px;color:var(--ink2);margin:12px 0 0">At the wedding: flat stomach, defined upper abs, obliques, clearly athletic. A visible six-pack needs 12–14% — that is a separate block after February.</p>
+    <p style="font-size:14px;color:var(--sf-muted);margin:12px 0 0">At the wedding: flat stomach, defined upper abs, obliques, clearly athletic. A visible six-pack needs 12–14% — that is a separate block after February.</p>
   </div>
 </div>
 
@@ -341,7 +149,7 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   <div id="trFood" style="display:none">
     <h2>Food log</h2>
     <p class="sub">Pick a day. Tap a meal to change or delete it.</p>
-    <div class="card">
+    <div class="card sf-card sf-glass">
       <div class="dn"><button type="button" id="dPrev" aria-label="Previous day" style="transform:rotate(90deg)"><span data-ic="chev"></span></button>
         <input type="date" id="dDay" aria-label="Day">
         <button type="button" id="dNext" aria-label="Next day" style="transform:rotate(-90deg)"><span data-ic="chev"></span></button></div>
@@ -358,8 +166,8 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   <h2>Log a measurement</h2>
   <p class="sub">Weight alone gives you a verdict. Add scan or blood values for a full comparison.</p>
 
-  <div class="card">
-    <div class="up">
+  <div class="card sf-card sf-glass">
+    <div class="upl">
       <button class="btn gh sm" type="button" id="upScan"><span data-ic="scale"></span>Photo of scan</button>
       <button class="btn gh sm" type="button" id="upBlood"><span data-ic="flask"></span>Blood report</button>
       <input type="file" id="fScan" accept="image/*" hidden>
@@ -399,19 +207,9 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
     <div id="res"><div class="vc" id="vc"><span data-ic="check" id="vci"></span><div><b id="vch"></b><p id="vct"></p></div></div><div id="dl"></div></div>
   </div>
 
-  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:2px 2px 0">
-    <span id="syncdot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex:none"></span>
-    <span id="synctxt">Saved on this device</span>
-    <button type="button" id="authbtn" style="margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:inherit;font-size:11px;padding:4px 9px;border-radius:7px;cursor:pointer;display:none">Sign in to sync</button>
-  </div>
-  <div class="card" style="padding:12px">
+  <div class="card sf-card sf-glass" style="padding:14px">
     <div class="sx"><table class="t" id="logt"></table></div>
     <div class="empty" id="le">Nothing logged yet.</div>
-  </div>
-  <div style="display:flex;gap:8px">
-    <button class="btn gh sm" id="save"><span data-ic="down2"></span>Save file</button>
-    <button class="btn gh sm" id="load"><span data-ic="up2"></span>Load file</button>
-    <input type="file" id="file" accept="application/json" hidden>
   </div>
   </div>
 </div>
@@ -421,24 +219,25 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   <h2>Data</h2>
   <p class="sub">Five scans from Oct 2025, two blood panels, plus anything you log.</p>
 
-  <div class="card">
+  <div class="card sf-card sf-glass">
     <div class="tgs" id="tgs"></div>
     <div id="chart"></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow"><span data-ic="food"></span>Nutrition</div>
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="food"></span>Nutrition</h3>
     <div class="sw" id="nSw"><button class="on" type="button" data-n="7">7 days</button><button type="button" data-n="30">30 days</button></div>
     <div id="nCh"></div>
-    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">Dashed line is the target for all three. Lines above it beat the target. A grey dash means nothing was logged.</p>
+    <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0">Dashed line is the target for all three. Lines above it beat the target. A grey dash means nothing was logged.</p>
   </div>
 
-  <div class="card" style="padding:12px">
-    <div class="eyebrow" style="padding:4px 4px 8px"><span data-ic="scale"></span>Scan history</div>
+  <div class="card sf-card sf-glass" style="padding:14px">
+    <h3 class="eyebrow" style="padding:4px 4px 8px"><span data-ic="scale"></span>Scan history</h3>
     <div class="sx"><table class="t" id="scant"></table></div>
   </div>
 
-  <div class="eyebrow" style="margin:18px 0 8px"><span data-ic="flask"></span>Biomarkers</div>
+  <h3 class="eyebrow" style="margin:18px 0 8px"><span data-ic="flask"></span>Biomarkers</h3>
+  <div class="ftot" id="bmSum" role="status"></div>
   <div class="chips" id="chips">
     <button class="chip on" data-f="all">All</button>
     <button class="chip" data-f="act">Action</button>
@@ -449,9 +248,78 @@ color:var(--muted);font:700 10px 'Inter';padding:5px;min-height:46px;justify-con
   <div class="bm" id="bm"></div>
 </div>
 
+<!-- ============ SETTINGS ============ -->
+<div class="panel" id="p-settings">
+  <h2>Settings</h2>
+  <p class="sub">Look, reminders, targets, goals and your data.</p>
+
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="sun"></span>Appearance</h3>
+    <div class="sw" id="thSw" role="group" aria-label="Appearance">
+      <button type="button" data-t="auto">Auto</button><button type="button" data-t="light">Light</button><button type="button" data-t="dark">Dark</button></div>
+    <div class="ftot">Auto follows your phone setting.</div>
+    <div class="fl" style="margin:14px 0 6px"><label id="glLb">Glass effects</label></div>
+    <div class="sw" id="glSw" role="group" aria-labelledby="glLb" style="margin-bottom:8px">
+      <button type="button" data-g="auto">Auto</button><button type="button" data-g="on">On</button></div>
+    <div class="ftot">Auto follows your device's transparency setting. On always shows frosted glass.</div>
+    <div class="fl" style="margin:14px 0 6px"><label id="bgLb">Background</label></div>
+    <div class="sw" id="bgSw" role="group" aria-labelledby="bgLb" style="margin-bottom:8px">
+      <button type="button" data-b="orbs">Orbs</button><button type="button" data-b="soft">Soft</button><button type="button" data-b="plain">Plain</button></div>
+    <div class="fl" style="margin:14px 0 8px"><label id="hLb">Accent color</label></div>
+    <div class="swatches" id="hueSw" role="group" aria-labelledby="hLb">
+      <button type="button" data-h="215" aria-label="Blue" style="--c:215"></button><button type="button" data-h="150" aria-label="Green" style="--c:150"></button><button type="button" data-h="265" aria-label="Violet" style="--c:265"></button><button type="button" data-h="335" aria-label="Rose" style="--c:335"></button></div>
+  </div>
+
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="bell"></span>Reminders</h3>
+    <div class="rmr" style="margin:0;padding:0;border:0"><span>Meal reminders<small id="rmMsg">2 pm breakfast and lunch · 9 pm dinner and snack</small></span>
+      <button type="button" role="switch" aria-checked="false" aria-label="Meal reminders" class="tg" id="rmTg"><i></i></button></div>
+    <span id="rmSt" hidden>Off</span><button type="button" id="rmBtn" hidden>Turn on reminders</button>
+  </div>
+
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="target"></span>Daily targets</h3>
+    <div class="kv"><span>Calories</span><span id="sKc"></span></div>
+    <div class="kv"><span>Protein</span><span id="sP"></span></div>
+    <div class="kv"><span>Fibre</span><span id="sF"></span></div>
+    <button class="btn gh" type="button" id="kEd" style="margin-top:12px">Edit targets</button>
+  </div>
+
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="flag"></span>Goals</h3>
+    <div class="f3">
+      <div class="fl"><label for="gEng">Engagement date</label><input type="date" id="gEng"></div>
+      <div class="fl"><label for="gEngKg">Weight then (kg)</label><input type="number" inputmode="decimal" step="0.1" min="30" max="250" id="gEngKg"></div>
+      <div class="fl"><label for="gWed">Wedding date</label><input type="date" id="gWed"></div>
+      <div class="fl"><label for="gWedKg">Weight then (kg)</label><input type="number" inputmode="decimal" step="0.1" min="30" max="250" id="gWedKg"></div>
+    </div>
+    <div class="ftot" id="gMsg" role="status"></div>
+    <button class="btn" type="button" id="gSave">Save goals</button>
+  </div>
+
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="shield"></span>Account and sync</h3>
+    <div class="rmr" style="margin:0;padding:0;border:0"><span style="display:flex;align-items:center;gap:10px;font-weight:500">
+      <i id="syncdot" style="width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none"></i><span id="synctxt">Saved on this device</span></span>
+      <button type="button" id="authbtn" class="btn gh sm" style="flex:none;display:none">Sign in to sync</button></div>
+  </div>
+
+  <div class="card sf-card sf-glass">
+    <h3 class="eyebrow"><span data-ic="down2"></span>Your data</h3>
+    <p class="uph" style="margin-top:0">Download a backup of your measurements, or restore one.</p>
+    <div style="display:flex;gap:10px">
+      <button class="btn gh sm" id="save"><span data-ic="down2"></span>Save file</button>
+      <button class="btn gh sm" id="load"><span data-ic="up2"></span>Load file</button>
+      <input type="file" id="file" accept="application/json" hidden>
+    </div>
+  </div>
+
+  <p class="uph" style="text-align:center">Health Plan · estimates for meals and scans come from an AI model; you check them before saving.</p>
+</div>
+</main>
 </div>
 
-<nav class="nav" id="nav">
+<nav class="nav sf-glass" data-sf-material="regular" id="nav" aria-label="Sections">
   <button data-p="today" class="on"><span data-ic="home"></span>Today</button>
   <button data-p="plan"><span data-ic="list"></span>Plan</button>
   <button data-p="track"><span data-ic="plus"></span>Log</button>
@@ -493,7 +361,7 @@ down2:'<path d="M12 4v11M8 11l4 4 4-4M4 20h16"/>',up2:'<path d="M12 20V9M8 13l4-
 eye:'<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/>',
 food:'<path d="M6 3v8a2.5 2.5 0 0 0 5 0V3M8.5 11v10"/><path d="M17 3c-1.5 2-2 4-2 6.5 0 1.4.8 2.5 2 2.5v9"/>',
 shield:'<path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/>',
-flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',replay:'<path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4h4"/>'};
+flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',replay:'<path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4h4"/>'};
 function ic(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+(P[n]||P.info)+'</svg>'}
 function paint(r){(r||document).querySelectorAll('[data-ic]').forEach(function(e){
   if(!e.dataset.d){e.innerHTML=ic(e.dataset.ic);e.dataset.d=1;e.style.cssText='display:inline-flex;align-items:center'}})}
@@ -508,6 +376,9 @@ function pd(v){if(v instanceof Date)return v;var m=/^(\d{4})-(\d{2})-(\d{2})$/.e
 function isoToday(){var d=new Date(),z=function(n){return(n<10?'0':'')+n};
   return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
 function validDate(v){var d=pd(v);return d instanceof Date&&!isNaN(d)}
+var GKEY='health-goals',G={eng:'2026-12-09',wed:'2027-02-03',engKg:75.5,wedKg:72};
+(function(){try{var g=JSON.parse(localStorage.getItem(GKEY)||'null');
+  if(g&&validDate(g.eng)&&validDate(g.wed)&&g.engKg>=30&&g.wedKg>=30)G=g}catch(e){}})();
 var BASE=[
 {d:'18 Oct 25',t:'10:42',iso:'2025-10-18',w:77.45,bf:22.30,mm:57.05,vf:9.5,bmi:25.1,mq:71,fat:17.3},
 {d:'27 Dec 25',t:'16:37',iso:'2025-12-27',w:76.40,bf:20.80,mm:57.40,vf:9.0,bmi:24.8,mq:76,fat:15.9},
@@ -538,7 +409,8 @@ function lsPut(l){try{localStorage.setItem(LKEY,JSON.stringify(
 function refresh(){renderLog();draw();today();if(window.scanTable)scanTable()}
 function sync(t,k){var d=document.getElementById('syncdot'),x=document.getElementById('synctxt');
   if(!d)return;d.style.background=k==='ok'?'var(--green)':k==='warn'?'var(--amber)':'var(--muted)';
-  x.textContent=t}
+  x.textContent=t;var h=document.getElementById('hdot'),gb=document.getElementById('gear');
+  if(h)h.style.background=d.style.background;if(gb)gb.setAttribute('aria-label','Settings. '+t)}
 function persist(){LOG.sort(function(a,b){return pd(a.date)-pd(b.date)});
   var ok=lsPut(LOG);
   sync(CLOUD?'Synced to cloud':ok?'Saved on this device':'Storage blocked \u2014 use Save file',
@@ -569,7 +441,8 @@ function toEntry(r){var e={date:r.taken_on,wk:r.week==null?null:+r.week};
     SIDE.forEach(function(k){if(r.extracted[k]!=null)e[k]=r.extracted[k]});
   return e}
 function authUI(){var b=document.getElementById('authbtn');if(!b)return;
-  b.textContent=USER?'Sign out':'Sign in to sync';b.style.display=SB?'':'none'}
+  b.textContent=USER?'Sign out':'Sign in to sync';b.style.display=SB?'':'none';
+  ['fAdd','dAdd'].forEach(function(i){var e=document.getElementById(i);if(e)e.textContent=SB&&!USER?'Sign in':'Add'})}
 function cloudInit(c){SB=c;
   c.auth.getSession().then(function(x){onAuth(x.data.session)})
    .catch(function(){CLOUD=false;sync('Cloud unreachable \u2014 using this device','warn');authUI()});
@@ -627,7 +500,18 @@ function wkNow(){return Math.max(0,Math.round((new Date()-DAY0)/(7*864e5)*10)/10
 /* ===== today ===== */
 function cd(id,d,short){var n=Math.max(0,Math.ceil((d-new Date())/864e5));
   document.getElementById(id).innerHTML=short?n+' days':n+'<small>days to go</small>'}
-cd('cd1',new Date(2026,11,9));cd('cd2',new Date(2027,1,3),1);
+function gFmt(d){return pd(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}).replace('Sept','Sep')}
+function gKg(n){return (+n)%1?(+n).toFixed(1):String(+n)}
+function applyGoals(){
+  cd('cd1',pd(G.eng));cd('cd2',pd(G.wed),1);
+  document.getElementById('gLb').textContent='Engagement \u00b7 '+gFmt(G.eng);
+  document.getElementById('gT').textContent=gKg(G.engKg)+' kg';
+  document.getElementById('gW').textContent=gKg(G.wedKg)+' kg';
+  document.getElementById('gTg').textContent='kg to '+gKg(G.wedKg)}
+function goalsFrom(r){if(!r||!r.eng_date||!r.wed_date)return;
+  G={eng:r.eng_date,wed:r.wed_date,engKg:r.eng_kg!=null?+r.eng_kg:G.engKg,wedKg:r.wed_kg!=null?+r.wed_kg:G.wedKg};
+  try{localStorage.setItem(GKEY,JSON.stringify(G))}catch(e){}applyGoals();today()}
+applyGoals();
 document.getElementById('day').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',day:'numeric',month:'short'})+' \u00b7 Week '+wkNow();
 
 var PHASE=[
@@ -643,8 +527,8 @@ function today(){
   document.getElementById('mWk').textContent='week '+wk;
   var last=LOG.filter(function(e){return e.w}).slice(-1)[0];
   if(last){document.getElementById('mLat').innerHTML=last.w.toFixed(1)+'<span class="u"> kg</span>';
-    document.getElementById('mLatD').textContent=pd(last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-    document.getElementById('mTogo').textContent=(last.w-72).toFixed(1)}
+    document.getElementById('mLatD').textContent=pd(last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}).replace('Sept','Sep');
+    document.getElementById('mTogo').textContent=(last.w-G.wedKg).toFixed(1)}
   for(var i=0;i<PHASE.length;i++){if(wk<=PHASE[i].to){
     document.getElementById('actH').textContent=PHASE[i].h;
     document.getElementById('actP').textContent=PHASE[i].p.replace('1,950',fmt(nt.kcal))
@@ -670,15 +554,15 @@ ST.forEach(function(s,i){var e=document.createElement('div');
     sh.setAttribute('aria-expanded',o?'true':'false')};t.appendChild(e)})})();
 
 /* ===== chart ===== */
-var SER=[{k:'w',n:'Weight',c:'#14605A',on:1},{k:'fat',n:'Fat mass',c:'#A8452F',on:1},
-{k:'mm',n:'Muscle',c:'#5A9A91',on:1},{k:'vf',n:'Visceral',c:'#B4702C',on:0},{k:'bf',n:'Body fat %',c:'#2E7D5B',on:0}];
+var SER=[{k:'w',n:'Weight',c:'var(--teal)',on:1},{k:'fat',n:'Fat mass',c:'var(--red)',on:1},
+{k:'mm',n:'Muscle',c:'var(--tealM)',on:1},{k:'vf',n:'Visceral',c:'var(--amber)',on:0},{k:'bf',n:'Body fat %',c:'var(--green)',on:0}];
 function scans(){
   var by={},k;
   BASE.forEach(function(p){by[p.iso]=p});
   LOG.forEach(function(e){
     if(e.w==null&&e.bf==null&&e.mm==null&&e.vf==null&&e.wa==null)return;
     var was=by[e.date]||{},d=pd(e.date);
-    by[e.date]={iso:e.date,d:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}),
+    by[e.date]={iso:e.date,d:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}).replace('Sept','Sep'),
       t:was.t||'logged',w:e.w!=null?e.w:null,bf:e.bf!=null?e.bf:null,mm:e.mm!=null?e.mm:null,
       vf:e.vf!=null?e.vf:null,wa:e.wa!=null?e.wa:null,
       bmi:e.w!=null?+(e.w/3.0976).toFixed(1):null,mq:was.mq||null,
@@ -691,7 +575,7 @@ function tHide(){tip.style.opacity=0}
 addEventListener('scroll',tHide,{passive:true});
 function draw(){
   var S=scans(),A=SER.filter(function(s){return s.on}),nr=innerWidth<620;
-  var W=nr?520:820,H=nr?280:320,L=34,R=10,T=14,B=30,v=[];
+  var W=nr?520:820,H=nr?280:320,L=34,R=nr?26:10,T=14,B=30,v=[];
   A.forEach(function(s){S.forEach(function(p){if(p[s.k]!=null)v.push(p[s.k])})});
   if(!v.length)v=[0,1];
   var mn=Math.min.apply(null,v),mx=Math.max.apply(null,v),pd=(mx-mn)*.18||2;mn-=pd;mx+=pd;
@@ -705,9 +589,9 @@ function draw(){
   A.forEach(function(se){var sg=[],c=[];
     S.forEach(function(p,i){if(p[se.k]!=null)c.push(X(i)+' '+Y(p[se.k]));else if(c.length){sg.push(c);c=[]}});
     if(c.length)sg.push(c);
-    sg.forEach(function(g){if(g.length>1)s+='<path d="M'+g.join(' L')+'" fill="none" stroke="'+se.c+'" stroke-width="2.2" stroke-linejoin="round"/>'})});
+    sg.forEach(function(g){if(g.length>1)s+='<path d="M'+g.join(' L')+'" fill="none" stroke="'+se.c+'" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="'+({w:'',fat:'8 5',mm:'2 5',vf:'12 4 2 4',bf:'1 4'}[se.k]||'')+'"/>'})});
   S.forEach(function(p,i){A.forEach(function(se){if(p[se.k]==null)return;
-    s+='<circle cx="'+X(i)+'" cy="'+Y(p[se.k])+'" r="'+(p.mine?6:5)+'" fill="'+(p.mine?se.c:'#fff')+'" stroke="'+se.c+'" stroke-width="2.2"/>'});
+    s+='<circle cx="'+X(i)+'" cy="'+Y(p[se.k])+'" r="'+(p.mine?6:5)+'" fill="'+(p.mine?se.c:'var(--sf-canvas)')+'" stroke="'+se.c+'" stroke-width="2.2"/>'});
     s+='<rect x="'+(X(i)-15)+'" y="'+T+'" width="30" height="'+(H-T-B)+'" fill="transparent" data-i="'+i+'"/>'});
   document.getElementById('chart').innerHTML=s+'</svg>';
   document.querySelectorAll('#chart rect[data-i]').forEach(function(c){
@@ -763,15 +647,18 @@ var M=[
 var CL={act:'var(--red)',watch:'var(--amber)',ok:'var(--green)',gap:'var(--muted)'},
 LB={act:'Action',watch:'Watch',ok:'In range',gap:'No data'},
 TG={act:'ta',watch:'tw',ok:'to',gap:'tg2'};
+var RANK={act:0,watch:1,ok:2,gap:3};
 function marks(f){var b=document.getElementById('bm');b.innerHTML='';
-M.filter(function(m){return f==='all'||m[3]===f}).forEach(function(m){
+  var c={act:0,watch:0,ok:0,gap:0};M.forEach(function(m){c[m[3]]++});
+  document.getElementById('bmSum').textContent=c.act+' to act on · '+c.watch+' to watch · '+c.ok+' in range · '+c.gap+' not measured';
+M.filter(function(m){return f==='all'||m[3]===f}).sort(function(a,b){return f==='all'?RANK[a[3]]-RANK[b[3]]:0}).forEach(function(m){
   var e=document.createElement('button');e.className='mk';e.type='button';
   e.innerHTML='<span class="tag '+TG[m[3]]+'">'+LB[m[3]]+'</span><div class="n">'+m[0]+'</div>'+
     '<div class="v">'+m[1]+'<span class="u2">'+m[2]+'</span></div><div class="rg"><i style="width:'+(m[4]||3)+'%;background:'+CL[m[3]]+'"></i></div>';
   e.onclick=function(){
     document.getElementById('mb').innerHTML='<span class="tag '+TG[m[3]]+'">'+LB[m[3]]+'</span>'+
       '<h3 style="margin-top:9px;font-size:20px">'+m[0]+'</h3>'+
-      '<div style="font:700 32px \'Inter Tight\';letter-spacing:-.03em;margin:4px 0 12px">'+m[1]+
+      '<div style="font:700 32px var(--sf-type-font);letter-spacing:-.03em;margin:4px 0 12px">'+m[1]+
       '<span style="font-size:13px;font-weight:500;color:var(--muted);margin-left:4px">'+m[2]+'</span></div>'+
       '<p style="font-size:13.5px;color:var(--ink2)">'+m[8]+'</p>'+
       '<div class="kv"><span>30 Apr 2026</span><span>'+m[6]+'</span></div>'+
@@ -829,7 +716,7 @@ function busy(t){
   document.getElementById('mb').innerHTML=
     '<div style="text-align:center;padding:26px 10px">'+
     '<div class="spin"></div>'+
-    '<div style="font:600 15px \'Inter\';margin-top:14px">'+t+'</div>'+
+    '<div style="font:600 15px var(--sf-type-font);margin-top:14px">'+t+'</div>'+
     '<p style="font-size:12.5px;color:var(--muted);margin:6px 0 0">This takes a few seconds.</p></div>';
   sheetOpen()}
 
@@ -868,14 +755,14 @@ function confirmSheet(kind,fields){
       '<input id="cf_'+k+'" type="'+t+'" '+(t==='number'?'inputmode="decimal" step="any" ':'')+
       'value="'+String(v).replace(/"/g,'&quot;')+'"></div>'});
   document.getElementById('mb').innerHTML=
-    '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Check these numbers</div>'+
+    '<div style="font:700 18px var(--sf-type-font);margin:0 0 5px">Check these numbers</div>'+
     '<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5">'+
     'Read from your '+(kind==='scan'?'scan':'report')+'. Correct anything wrong. '+
     'Nothing is saved until you tap Use these.</p>'+
     '<div class="cf">'+rows+'</div>'+
     '<button class="btn" type="button" id="cf_ok" style="margin-top:12px">Use these</button>'+
     '<button type="button" id="cf_no" style="width:100%;margin-top:8px;border:none;background:none;'+
-    'color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Discard</button>';
+    'color:var(--muted);font:500 13px var(--sf-type-font);padding:9px;cursor:pointer">Discard</button>';
   sheetOpen();
   document.getElementById('cf_no').onclick=sheetClose;
   document.getElementById('cf_ok').onclick=function(){
@@ -916,7 +803,7 @@ function nv(i){var el=document.getElementById(i),v=parseFloat(el.value);
   if((!isNaN(lo)&&v<lo)||(!isNaN(hi)&&v>hi)){if(BAD.indexOf(el)<0)BAD.push(el);return null}
   return v}
 function bg(t,k){var c=k==='good'?'var(--greenS);color:var(--green)':k==='bad'?'var(--redS);color:var(--red)':
-  k==='mid'?'var(--amberS);color:var(--amber)':'#EEEDE7;color:var(--ink2)';
+  k==='mid'?'var(--amberS);color:var(--amber)':'rgba(130,145,166,.2);color:var(--ink2)';
   return '<span class="t" style="background:'+c+'">'+t+'</span>'}
 document.getElementById('dI').value=isoToday();
 document.querySelectorAll('.acc .ah').forEach(function(b){
@@ -980,10 +867,10 @@ function renderLog(){var t=document.getElementById('logt'),e=document.getElement
   if(!LOG.length){t.innerHTML='';e.style.display='block';return}
   e.style.display='none';
   var h='<tr><th>Date</th><th>Wk</th><th>Wt</th><th>Fat%</th><th>Muscle</th><th>Visc</th><th>Waist</th><th>HOMA</th><th></th></tr>';
-  LOG.forEach(function(r,i){h+='<tr><td>'+pd(r.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</td><td>'+(r.wk!=null?r.wk:'\u2014')+'</td>'+
+  LOG.forEach(function(r,i){h+='<tr><td>'+pd(r.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}).replace('Sept','Sep')+'</td><td>'+(r.wk!=null?r.wk:'\u2014')+'</td>'+
     '<td>'+(r.w!=null?r.w:'—')+'</td><td>'+(r.bf!=null?r.bf:'—')+'</td><td>'+(r.mm!=null?r.mm:'—')+'</td>'+
     '<td>'+(r.vf!=null?r.vf:'—')+'</td><td>'+(r.wa!=null?r.wa:'—')+'</td><td>'+(r.homa!=null?r.homa:'—')+'</td>'+
-    '<td><button type="button" aria-label="Delete this entry" data-x="'+i+'" style="border:none;background:none;color:var(--muted);cursor:pointer;padding:3px">'+ic('x')+'</button></td></tr>'});
+    '<td><button type="button" aria-label="Delete this entry" data-x="'+i+'" style="border:none;background:none;color:var(--muted);cursor:pointer;padding:0;min-width:44px;min-height:44px;display:grid;place-items:center">'+ic('x')+'</button></td></tr>'});
   t.innerHTML=h;
   t.querySelectorAll('[data-x]').forEach(function(b){b.onclick=function(){if(!confirm('Delete this entry?'))return;
     var g=LOG.splice(+b.dataset.x,1)[0];cloudDelete(g.date);persist()}})}
@@ -1008,7 +895,7 @@ document.getElementById('file').onchange=function(e){var f=e.target.files[0];if(
 document.querySelectorAll('#nav button').forEach(function(b){b.onclick=function(){
   document.querySelectorAll('#nav button').forEach(function(z){z.classList.remove('on')});
   document.querySelectorAll('.panel').forEach(function(z){z.classList.remove('on')});
-  b.classList.add('on');document.getElementById('p-'+b.dataset.p).classList.add('on');
+  document.getElementById('gear').classList.remove('on');b.classList.add('on');document.getElementById('p-'+b.dataset.p).classList.add('on');
   scrollTo(0,0);if(b.dataset.p==='data'){draw();window.nChart&&nChart()}}});
 today();draw();paint();persist();
 document.getElementById('authbtn').onclick=function(){
@@ -1019,7 +906,7 @@ document.getElementById('authbtn').onclick=function(){
   openAuth()};
 function openNewPw(){
   document.getElementById('mb').innerHTML=
-    '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Set a new password</div>'+
+    '<div style="font:700 18px var(--sf-type-font);margin:0 0 5px">Set a new password</div>'+
     '<p style="font-size:13px;color:var(--muted);margin:0 0 15px;line-height:1.5">Use at least 10 characters.</p>'+
     '<form id="npf">'+
     '<div class="fl"><label for="np_a">New password</label>'+
@@ -1045,7 +932,7 @@ function openNewPw(){
   setTimeout(function(){document.getElementById('np_a').focus()},60)}
 function openAuth(){
   document.getElementById('mb').innerHTML=
-    '<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Sign in</div>'+
+    '<div style="font:700 18px var(--sf-type-font);margin:0 0 5px">Sign in</div>'+
     '<p style="font-size:13px;color:var(--muted);margin:0 0 15px;line-height:1.5">Your log syncs to every device you sign in on.</p>'+
     '<form id="authf">'+
     '<div class="fl"><label for="au_e">Email</label>'+
@@ -1055,9 +942,9 @@ function openAuth(){
     '<div id="au_m" style="font-size:12.5px;color:var(--red);margin:0 0 11px;display:none"></div>'+
     '<button class="btn" type="submit" id="au_go">Sign in</button></form>'+
     '<button type="button" id="au_fp" style="width:100%;margin-top:10px;border:none;background:none;'+
-    'color:var(--teal);font:600 13px \'Inter\';padding:4px;cursor:pointer">Forgot password?</button>'+
+    'color:var(--teal);font:600 13px var(--sf-type-font);padding:4px;cursor:pointer">Forgot password?</button>'+
     '<button type="button" id="au_skip" style="width:100%;margin-top:2px;border:none;background:none;'+
-    'color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Not now, use this device only</button>';
+    'color:var(--muted);font:500 13px var(--sf-type-font);padding:9px;cursor:pointer">Not now, use this device only</button>';
   sheetOpen();
   document.getElementById('authf').onsubmit=function(ev){ev.preventDefault();
     var e=document.getElementById('au_e').value.trim(),
@@ -1116,7 +1003,7 @@ function foodAuth(){
     if(r[0].error)throw r[0].error;
     MEALS=r[0].data||[];FROM=from;LOADED={};DAYFAIL={};STALE=false;PULLED=Date.now();
     var s=r[1].data;
-    if(s){['kcal','tdee','protein_g','fibre_g'].forEach(function(k){NT[k]=+s[k]});NT.avoid=s.avoid||''}
+    if(s){['kcal','tdee','protein_g','fibre_g'].forEach(function(k){NT[k]=+s[k]});NT.avoid=s.avoid||'';goalsFrom(s)}
     mPut();foodAll()})
    .catch(function(){STALE=true;foodAll()})}
 
@@ -1178,12 +1065,12 @@ function nChart(){var box=document.getElementById('nCh');
   var Y=function(v){return T+(base-T)*(1-v/mx)},X=function(i){return i*bw+bw/2};
   var s='<svg class="ch" viewBox="0 0 '+W+' '+H+'">';
   per.forEach(function(p,i){var x=i*bw+bw*.2,w=bw*.6;
-    if(!p)s+='<line x1="'+x+'" x2="'+(x+w)+'" y1="'+(base-1)+'" y2="'+(base-1)+'" stroke="#C9C7BE" stroke-width="2"/>';
+    if(!p)s+='<line x1="'+x+'" x2="'+(x+w)+'" y1="'+(base-1)+'" y2="'+(base-1)+'" stroke="var(--line)" stroke-width="2"/>';
     else s+='<rect x="'+x+'" y="'+Math.min(Y(p.kcal),base-2)+'" width="'+w+'" height="'+Math.max(2,base-Y(p.kcal))+'" rx="2" fill="'+
-      (p.kcal>K?'#E3B1A5':'#B9D3CF')+'"/>';
+      (p.kcal>K?'color-mix(in srgb,var(--red) 45%,transparent)':'color-mix(in srgb,var(--teal) 32%,transparent)')+'"/>';
     if(n<=7||i%5===4||i===n-1)s+='<text class="ax" style="font-size:16px" x="'+X(i)+'" y="'+(H-3)+'" text-anchor="middle">'+(+days[i].slice(8))+'</text>'});
   s+='<line x1="0" x2="'+W+'" y1="'+Y(K)+'" y2="'+Y(K)+'" stroke="var(--ink2)" stroke-width="1" stroke-dasharray="4 4"/>';
-  [['protein_g','#14605A'],['fibre_g','#B4702C']].forEach(function(l){var seg=[],c=[];
+  [['protein_g','var(--teal)'],['fibre_g','var(--amber)']].forEach(function(l){var seg=[],c=[];
     per.forEach(function(p,i){if(p)c.push(X(i)+' '+Y(p[l[0]]*sc[l[0]]));else if(c.length){seg.push(c);c=[]}});
     if(c.length)seg.push(c);
     seg.forEach(function(g){if(g.length>1)s+='<path d="M'+g.join(' L')+'" fill="none" stroke="'+l[1]+'" stroke-width="2.2" stroke-linejoin="round"/>';
@@ -1193,7 +1080,7 @@ function nChart(){var box=document.getElementById('nCh');
   var avg=function(k){return got.length?got.reduce(function(a,p){return a+p[k]},0)/got.length:0},
       key=function(c,t,bar){return '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><i style="display:block;width:'+
         (bar?'10px;height:10px;border-radius:2px':'14px;height:3px;border-radius:2px')+';background:'+c+'"></i>'+t+'</span>'};
-  box.innerHTML='<div class="ftot" style="margin-top:8px">'+key('#B9D3CF','Calories',1)+key('#14605A','Protein')+key('#B4702C','Fibre')+'</div>'+s+'</svg>'+
+  box.innerHTML='<div class="ftot" style="margin-top:8px">'+key('color-mix(in srgb,var(--teal) 32%,transparent)','Calories',1)+key('var(--teal)','Protein')+key('var(--amber)','Fibre')+'</div>'+s+'</svg>'+
     '<div class="ftot">'+(got.length?'Average on logged days: '+fmt(avg('kcal'))+' kcal · '+fmt(avg('protein_g'))+' g protein · '+
       fmt(avg('fibre_g'))+' g fibre. ':'')+'Logged '+got.length+' of '+NDAYS+' days.</div>'}
 
@@ -1237,7 +1124,7 @@ function estimate(text,day,keep){
 
 function mealSheet(m,isNew,warn){
   var a=m.ai||null,conf=m.confidence,cls={high:'to',medium:'tw',low:'ta'};
-  var h='<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">'+(isNew?'Check this meal':'Edit meal')+'</div>'+
+  var h='<div style="font:700 18px var(--sf-type-font);margin:0 0 5px">'+(isNew?'Check this meal':'Edit meal')+'</div>'+
     '<p style="font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5">Correct anything wrong. Nothing is saved until you tap Save.</p>';
   if(warn)h+='<div class="vc mid" style="padding:11px 13px"><p>'+esc(warn)+'</p></div>';
   if(conf||m.assumptions){h+='<div class="ain" style="font-size:12.5px;color:var(--ink2);margin:0 0 12px">'+
@@ -1259,7 +1146,7 @@ function mealSheet(m,isNew,warn){
     '<button class="btn" type="button" id="ms_ok" style="margin-top:12px">Save</button>'+
     '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn gh sm" type="button" id="ms_re">Estimate again</button>'+
     (isNew?'':'<button class="btn gh sm" type="button" id="ms_x" style="color:var(--red)">Delete</button>')+'</div>'+
-    '<button type="button" id="ms_no" style="width:100%;margin-top:6px;border:none;background:none;color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">'+(isNew?'Discard':'Close')+'</button>';
+    '<button type="button" id="ms_no" style="width:100%;margin-top:6px;border:none;background:none;color:var(--muted);font:500 13px var(--sf-type-font);padding:9px;cursor:pointer">'+(isNew?'Discard':'Close')+'</button>';
   document.getElementById('mb').innerHTML=h;sheetOpen();
   var $=function(i){return document.getElementById(i)},
       snap=function(){return Array.prototype.map.call(document.querySelectorAll('#mb input,#mb select,#mb textarea'),function(e){return e.value}).join('|')},
@@ -1313,12 +1200,12 @@ function mealSheet(m,isNew,warn){
    back split. Each part is checked here and saved as its own meal. */
 function splitSheet(a,day,src,base){
   var P=a.meals,cls={high:'to',medium:'tw',low:'ta'};
-  var h='<div style="font:700 18px \'Inter Tight\';margin:0 0 5px">Check these '+P.length+' meals</div>'+
+  var h='<div style="font:700 18px var(--sf-type-font);margin:0 0 5px">Check these '+P.length+' meals</div>'+
     '<p style="font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5">Correct anything wrong. Nothing is saved until you tap Save all.</p>'+
     '<div class="fl"><label for="sp_d">Date</label><input type="date" id="sp_d" max="'+ist()+'" value="'+esc(day)+'"></div>';
   P.forEach(function(p,i){
     h+='<div id="sp_'+i+'" style="border-top:1px solid var(--line);padding-top:12px;margin-top:6px">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font:600 14px \'Inter Tight\'">Meal '+(i+1)+'</b>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font:600 14px var(--sf-type-font)">Meal '+(i+1)+'</b>'+
       '<button type="button" class="lnk" data-rm="'+i+'" style="color:var(--red)">Remove</button></div>'+
       '<div class="ain" style="font-size:12.5px;color:var(--ink2);margin:0 0 10px">'+
       '<span class="tag '+cls[p.confidence]+'">'+p.confidence+' confidence</span> '+esc(p.assumptions)+
@@ -1332,7 +1219,7 @@ function splitSheet(a,day,src,base){
   h+='<div id="sp_e" style="font-size:12.5px;color:var(--red);margin:10px 0 0;display:none"></div>'+
     '<button class="btn" type="button" id="sp_ok" style="margin-top:12px">Save all</button>'+
     '<button class="btn gh sm" type="button" id="sp_one" style="margin-top:8px">Save as one meal instead</button>'+
-    '<button type="button" id="sp_no" style="width:100%;margin-top:6px;border:none;background:none;color:var(--muted);font:500 13px \'Inter\';padding:9px;cursor:pointer">Discard</button>';
+    '<button type="button" id="sp_no" style="width:100%;margin-top:6px;border:none;background:none;color:var(--muted);font:500 13px var(--sf-type-font);padding:9px;cursor:pointer">Discard</button>';
   document.getElementById('mb').innerHTML=h;document.getElementById('mb').oninput=null;sheetOpen();
   var $=function(i){return document.getElementById(i)},gone={},
       fixed=function(i){return [$('sp_t'+i).value.trim(),$('sp_m'+i).value].concat(NF.map(function(f){return parseFloat($('sp_'+f[0]+i).value)})).join('|')},
@@ -1376,7 +1263,7 @@ function setSheet(){
   if(!SB||!USER){openAuth();return}
   var F=[['kcal','Daily calories (kcal)',800,6000],['tdee','Estimated TDEE (kcal)',800,6000],
     ['protein_g','Protein (g)',20,400],['fibre_g','Fibre (g)',5,100]];
-  document.getElementById('mb').innerHTML='<div style="font:700 18px \'Inter Tight\';margin:0 0 12px">Daily targets</div>'+
+  document.getElementById('mb').innerHTML='<div style="font:700 18px var(--sf-type-font);margin:0 0 12px">Daily targets</div>'+
     '<div class="f3">'+F.map(function(f){return '<div class="fl"><label for="st_'+f[0]+'">'+f[1]+'</label><input type="number" inputmode="numeric" id="st_'+f[0]+
       '" min="'+f[2]+'" max="'+f[3]+'" value="'+NT[f[0]]+'"></div>'}).join('')+'</div>'+
     '<div class="fl"><label for="st_av">Foods that bloat you (optional)</label><textarea id="st_av" rows="2" maxlength="500" placeholder="e.g. rajma, chole, raw onion">'+esc(NT.avoid)+'</textarea></div>'+
@@ -1459,6 +1346,55 @@ document.getElementById('rmBtn').onclick=document.getElementById('rmTg').onclick
             g.showNotification('Reminders are on',{body:'You will get one at 2 pm and 9 pm if a meal is not logged.',icon:'icons/icon-192.png?v=2',tag:'rm-on'});
             done(true)})})})})
   .catch(function(e){done(false,e==='sw'?'Reminders need the app installed from the home screen. Reload and try again.':'Could not turn on. Check your connection and try again.')})};
+/* ----- settings ----- */
+function go(name){
+  document.querySelectorAll('#nav button').forEach(function(z){z.classList.remove('on')});
+  document.querySelectorAll('.panel').forEach(function(z){z.classList.remove('on')});
+  document.getElementById('p-'+name).classList.add('on');scrollTo(0,0);
+  document.getElementById('gear').classList.toggle('on',name==='settings');
+  if(name==='settings')settingsFill()}
+function themePref(){try{return localStorage.getItem('health-theme')||'auto'}catch(e){return 'auto'}}
+function glassPref(){try{return localStorage.getItem('health-glass')==='on'?'on':'auto'}catch(e){return 'auto'}}
+function bgPref(){try{var v=localStorage.getItem('health-bg');return v==='soft'||v==='plain'?v:'orbs'}catch(e){return 'orbs'}}
+function huePref(){try{return localStorage.getItem('health-hue')||'215'}catch(e){return '215'}}
+function settingsFill(){
+  var bp=bgPref(),hp=huePref();
+  document.querySelectorAll('#bgSw button').forEach(function(b){var on=b.dataset.b===bp;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+  document.querySelectorAll('#hueSw button').forEach(function(b){var on=b.dataset.h===hp;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+  var gp=glassPref();
+  document.querySelectorAll('#glSw button').forEach(function(b){var on=b.dataset.g===gp;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+  var p=themePref();
+  document.querySelectorAll('#thSw button').forEach(function(b){var on=b.dataset.t===p;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+  document.getElementById('sKc').textContent=fmt(NT.kcal)+' kcal';
+  document.getElementById('sP').textContent=NT.protein_g+' g';
+  document.getElementById('sF').textContent=NT.fibre_g+' g';
+  document.getElementById('gEng').value=G.eng;document.getElementById('gWed').value=G.wed;
+  document.getElementById('gEngKg').value=G.engKg;document.getElementById('gWedKg').value=G.wedKg;
+  document.getElementById('gMsg').textContent='';document.getElementById('gMsg').className='ftot'}
+document.getElementById('gear').onclick=function(){
+  if(document.getElementById('p-settings').classList.contains('on'))document.querySelector('#nav button[data-p=today]').click();
+  else go('settings')};
+document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+document.querySelectorAll('#bgSw button').forEach(function(b){b.onclick=function(){setBg(b.dataset.b);settingsFill()}});
+document.querySelectorAll('#hueSw button').forEach(function(b){b.onclick=function(){setHue(b.dataset.h);settingsFill()}});
+document.querySelectorAll('#glSw button').forEach(function(b){b.onclick=function(){setGlass(b.dataset.g);settingsFill()}});
+document.querySelectorAll('#thSw button').forEach(function(b){b.onclick=function(){setTheme(b.dataset.t);settingsFill()}});
+document.getElementById('gSave').onclick=function(){
+  var m=document.getElementById('gMsg'),b=this;
+  var g={eng:document.getElementById('gEng').value,wed:document.getElementById('gWed').value,
+    engKg:+document.getElementById('gEngKg').value,wedKg:+document.getElementById('gWedKg').value};
+  function bad(t){m.className='ftot gerr';m.textContent=t}
+  if(!g.eng||!g.wed||!validDate(g.eng)||!validDate(g.wed))return bad('Enter both dates.');
+  if(pd(g.wed)<=pd(g.eng))return bad('The wedding date must come after the engagement date.');
+  if(!(g.engKg>=30&&g.engKg<=250&&g.wedKg>=30&&g.wedKg<=250))return bad('Weights must be between 30 and 250 kg.');
+  G=g;try{localStorage.setItem(GKEY,JSON.stringify(G))}catch(e){}applyGoals();today();
+  m.className='ftot';
+  if(!SB||!USER){m.textContent='Saved on this device. Sign in to sync it.';return}
+  b.disabled=true;
+  SB.from('nutrition_settings').upsert({user_id:USER.id,eng_date:g.eng,wed_date:g.wed,eng_kg:g.engKg,wed_kg:g.wedKg,updated_at:new Date().toISOString()},{onConflict:'user_id'})
+    .then(function(x){b.disabled=false;m.textContent=x.error?'Saved on this device. Cloud sync is not set up yet.':'Saved and synced.'},
+    function(){b.disabled=false;m.textContent='Saved on this device. Could not reach the cloud.'})};
+settingsFill();
 rmInit();
 paint();foodAll();
 </script>
