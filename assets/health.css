@@ -281,3 +281,8 @@ html[data-glass="on"] .sf-app .sf-glass,html[data-glass="on"] .sf-app .sf-glass-
 background:var(--sf-glass-reflection),var(--sf-glass-fill)!important;
 -webkit-backdrop-filter:blur(var(--sf-surface-blur)) saturate(var(--sf-surface-saturation))!important;
 backdrop-filter:blur(var(--sf-surface-blur)) saturate(var(--sf-surface-saturation))!important}}
+
+/* Google Sans everywhere (falls back to the system font offline) */
+:root{--sf-type-font:'Google Sans',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+/* calories left reads first on the food card */
+#fLeft{font-size:15px;font-weight:620;color:var(--sf-ink-strong)}

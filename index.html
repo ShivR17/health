@@ -23,8 +23,11 @@ window.setGlass=function(v){try{v==='on'?localStorage.setItem('health-glass','on
 window.setTheme=function(p){try{p==='auto'?localStorage.removeItem('health-theme'):localStorage.setItem('health-theme',p)}catch(e){}s()};
 s();m.addEventListener&&m.addEventListener('change',s)})();
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/sea-glass.css?v=1">
-<link rel="stylesheet" href="assets/health.css?v=6">
+<link rel="stylesheet" href="assets/health.css?v=7">
 <script defer src="assets/sea-glass.js?v=1"></script>
 </head>
 <body class="sf-app">
@@ -576,7 +579,7 @@ function draw(){
   A.forEach(function(se){var sg=[],c=[];
     S.forEach(function(p,i){if(p[se.k]!=null)c.push(X(i)+' '+Y(p[se.k]));else if(c.length){sg.push(c);c=[]}});
     if(c.length)sg.push(c);
-    sg.forEach(function(g){if(g.length>1)s+='<path d="M'+g.join(' L')+'" fill="none" stroke="'+se.c+'" stroke-width="2.2" stroke-linejoin="round"/>'})});
+    sg.forEach(function(g){if(g.length>1)s+='<path d="M'+g.join(' L')+'" fill="none" stroke="'+se.c+'" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="'+({w:'',fat:'8 5',mm:'2 5',vf:'12 4 2 4',bf:'1 4'}[se.k]||'')+'"/>'})});
   S.forEach(function(p,i){A.forEach(function(se){if(p[se.k]==null)return;
     s+='<circle cx="'+X(i)+'" cy="'+Y(p[se.k])+'" r="'+(p.mine?6:5)+'" fill="'+(p.mine?se.c:'var(--sf-canvas)')+'" stroke="'+se.c+'" stroke-width="2.2"/>'});
     s+='<rect x="'+(X(i)-15)+'" y="'+T+'" width="30" height="'+(H-T-B)+'" fill="transparent" data-i="'+i+'"/>'});
