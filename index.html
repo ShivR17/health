@@ -901,7 +901,7 @@ document.querySelectorAll('#nav button').forEach(function(b){b.onclick=function(
 (function(){var nv=document.getElementById('nav'),ln=nv.querySelector('.lens');
   function mv(){var b=nv.querySelector('button.on');if(!b||!b.offsetWidth)return;ln.style.width=b.offsetWidth+'px';ln.style.height=b.offsetHeight+'px';
     ln.style.transform='translate('+b.offsetLeft+'px,'+b.offsetTop+'px)';nv.classList.add('has-lens')}
-  new MutationObserver(mv).observe(nv,{attributes:true,attributeFilter:['class'],subtree:true});addEventListener('resize',mv);requestAnimationFrame(mv)})();
+  new MutationObserver(mv).observe(nv,{attributes:true,attributeFilter:['class'],subtree:true});addEventListener('resize',mv);addEventListener('load',mv);new ResizeObserver(mv).observe(nv);document.fonts&&document.fonts.ready.then(mv);requestAnimationFrame(mv)})();
 today();draw();paint();persist();
 document.getElementById('authbtn').onclick=function(){
   if(!SB){alert('Cloud is not loaded. Check your connection and reload.');return}
