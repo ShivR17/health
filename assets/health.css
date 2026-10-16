@@ -28,7 +28,7 @@ h2{font-size:26px;font-weight:650;letter-spacing:-.03em;margin-bottom:6px}
 p{margin:0 0 10px}
 svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
 ::selection{background:var(--sf-accent);color:#192632}
-:focus-visible{outline:2px solid var(--sf-focus);outline-offset:3px;border-radius:8px}
+:focus-visible{outline:2px solid var(--sf-focus);outline-offset:3px}
 :focus:not(:focus-visible){outline:none}
 .sf-skip-link{position:fixed;inset-block-start:10px;inset-inline-start:10px;z-index:1000;background:var(--sf-canvas);color:var(--sf-ink-strong);border-radius:14px;padding:12px 17px;transform:translateY(-180%);text-decoration:none}
 .sf-skip-link:focus-visible{transform:none}
@@ -241,3 +241,23 @@ transition:background var(--sf-motion-normal) var(--sf-motion-ease),color var(--
 #mb button{min-height:44px}
 #mb h3{font-size:18px}
 .sf-app svg.ch{width:100%;height:auto;fill:var(--sf-ink);stroke:none}
+
+/* header gear + sync dot */
+.gear{position:relative;flex:none;width:44px;height:44px;margin:-4px -6px -4px 0;border:0;border-radius:50%;display:grid;place-items:center;background:transparent;color:var(--sf-ink);cursor:pointer;touch-action:manipulation;
+transition:background var(--sf-motion-normal) var(--sf-motion-ease)}
+.gear:hover{background:var(--card)}
+.gear.on{background:var(--sf-selection);box-shadow:inset 0 1px rgba(255,255,255,.32)}
+.hdot{position:absolute;top:9px;right:9px;width:9px;height:9px;border-radius:50%;background:var(--sf-muted);box-shadow:0 0 0 2px var(--sf-canvas)}
+.gerr{color:var(--red)}
+#thSw button{min-width:0}
+/* readable chart text (viewBox units: 16 on phones renders about 10px) */
+.ax{font-size:16px}
+@media(min-width:620px){.ax{font-size:12px}}
+/* scroll cue on the chip rows */
+.tgs,.chips{padding-right:32px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+:root{--nav:calc(112px + env(safe-area-inset-bottom))}
+.bd,.day{white-space:nowrap}
+.bd{overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media(max-width:440px){.bd span{display:none}}
+.bd{font-size:20px}
+.eyebrow{font-size:17px}
