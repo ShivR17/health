@@ -391,3 +391,5 @@ pointer-events:none;transition:transform var(--sf-motion-spatial) var(--sf-motio
 #chart svg.ch{animation:reveal 900ms var(--sf-motion-ease) both}
 .panel>.card{margin-bottom:16px}
 @media(prefers-reduced-motion:reduce){.skl i,#chart svg.ch{animation:none}}
+.fin textarea{overflow:hidden;scrollbar-width:thin}
+.fin:focus-within textarea,.fin textarea:not(:placeholder-shown){overflow:auto}
