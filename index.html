@@ -27,11 +27,9 @@ window.setHue=function(h){try{h&&h!=='215'?localStorage.setItem('health-hue',h):
 window.setTheme=function(p){try{p==='auto'?localStorage.removeItem('health-theme'):localStorage.setItem('health-theme',p)}catch(e){}s()};
 s();m.addEventListener&&m.addEventListener('change',s)})();
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/google-sans-latin.woff2">
 <link rel="stylesheet" href="assets/sea-glass.css?v=1">
-<link rel="stylesheet" href="assets/health.css?v=11">
+<link rel="stylesheet" href="assets/health.css?v=12">
 <script defer src="assets/sea-glass.js?v=1"></script>
 </head>
 <body class="sf-app">
