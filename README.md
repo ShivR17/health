@@ -11,6 +11,15 @@ Single file app (`index.html`), vanilla JS, no build step. Backend is Supabase. 
 - **Data**: body charts and a 7 or 30 day nutrition chart.
 - **Food estimates**: an AI model reads meal text for kcal, macros, fibre, and a tip. The app shows each estimate for checking before saving. Daily totals are computed in the app, never by the AI.
 - **Reminders**: Web Push at 14:00 IST (breakfast, lunch) and 21:00 IST (dinner, snack) if nothing is logged. Fasting days are skipped.
+- **7 day strip**: consistency bars for the last 7 days of logging on Today.
+- **Quick-add chips**: one-tap re-add of the three most frequent past meals.
+- **Progress track**: weight from start to goal, with a plan marker.
+- **Next-meal hint**: "<meal> is next" shown on the food card.
+
+## Design
+
+- [PRODUCT.md](PRODUCT.md): product context and users.
+- [DESIGN.md](DESIGN.md): Sea Glass design system (tokens, components, motion, accessibility).
 
 ## Architecture
 

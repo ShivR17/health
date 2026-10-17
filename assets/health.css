@@ -1,3 +1,23 @@
+/* latin-ext */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(fonts/google-sans-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(fonts/google-sans-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* Health app skin on Sea Glass Design. Loads after sea-glass.css.
    Legacy variable names are kept (the charts in index.html read them) and
    mapped to Sea Glass tokens so light and dark follow the theme. */
@@ -296,3 +316,101 @@ background:linear-gradient(140deg,hsl(var(--c) 90% 88%),hsl(var(--c) 82% 66%));b
 transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}
 .swatches button.on{box-shadow:0 0 0 2px var(--sf-canvas),0 0 0 4px hsl(var(--c) 70% 38%)}
 .swatches button:active{transform:scale(.95)}
+
+/* ===== Impeccable refine (branch ui/impeccable-refine) ===== */
+/* Phase 1: layout. Compact hero, folded reference cards, compact composer */
+.hero{padding:18px 20px}
+.hero .big{font-size:clamp(40px,12vw,54px);margin:4px 0 2px}
+.hero .row{margin-top:12px;padding-top:12px}
+details.fold{padding:0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;padding:14px 20px;margin:0}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold[open]>summary{padding-bottom:6px}
+details.fold>:not(summary){margin-left:20px;margin-right:20px}
+details.fold>:last-child{margin-bottom:18px}
+details.fold .chev{margin-left:auto;width:8px;height:8px;border-right:2px solid var(--sf-muted);border-bottom:2px solid var(--sf-muted);transform:rotate(45deg) translateY(-2px);transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}
+details.fold[open] .chev{transform:rotate(-135deg) translateY(-2px)}
+.fin textarea{min-height:48px;height:48px;resize:none;transition:height var(--sf-motion-normal) var(--sf-motion-ease)}
+.fin:focus-within textarea,.fin textarea:not(:placeholder-shown){height:92px}
+.fin .btn{height:48px}
+
+/* Phase 2: type. Larger, lighter numerals; steadier labels; balanced wraps */
+h2,h3,.act h2{text-wrap:balance}
+p,.rule,.note{text-wrap:pretty}
+.kcal{font-size:40px;font-weight:500;letter-spacing:-.04em;line-height:1.05}
+.kcal span{font-size:15px;font-weight:500;letter-spacing:0;color:var(--sf-muted)}
+.hero .big{font-weight:500}
+.hero .row .v,.mini .v{font-weight:500}
+.hero .lb,.mini .k,.mac .h span,.hero .row .k{letter-spacing:.01em}
+.mini .v{font-size:28px}
+.ml .v,.kv span:last-child{font-variant-numeric:tabular-nums}
+::selection{background:hsl(var(--sf-hue) 80% 78%);color:var(--sf-ink-strong)}
+textarea,input{caret-color:var(--teal)}
+a{text-underline-offset:3px}
+
+/* Phase 3: motion. One authored moment: staggered card entrance. Confirming motion elsewhere. */
+.panel.on{animation:none}
+.panel.on>*{animation:rise var(--sf-motion-spatial) var(--sf-motion-ease) both}
+.panel.on>:nth-child(2){animation-delay:40ms}.panel.on>:nth-child(3){animation-delay:80ms}
+.panel.on>:nth-child(4){animation-delay:120ms}.panel.on>:nth-child(5){animation-delay:160ms}
+.panel.on>:nth-child(n+6){animation-delay:200ms}
+.nav{isolation:isolate}
+.nav .lens{position:absolute;z-index:-1;top:0;left:0;border-radius:999px;background:var(--sf-selection);box-shadow:inset 0 1px rgba(255,255,255,.32);
+pointer-events:none;transition:transform var(--sf-motion-spatial) var(--sf-motion-ease),width var(--sf-motion-spatial) var(--sf-motion-ease)}
+.nav.has-lens button.on{background:none;box-shadow:none}
+@keyframes mealin{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.ml.in{animation:mealin var(--sf-motion-spatial) var(--sf-motion-ease) both}
+.mac.hit .bar{box-shadow:0 5px 12px -7px var(--teal)}
+.mac.hit .h b{color:var(--green)}
+.kcal .cu{font-weight:inherit}
+.bar i{transition:width var(--sf-motion-reveal) var(--sf-motion-ease)}
+@media(prefers-reduced-motion:reduce){.panel.on>*,.ml.in{animation:none}.nav .lens{transition:none}}
+
+/* Phase 4: consistency strip, progress track, chips, skeleton, chart reveal, contrast */
+:root:not([data-sf-theme="dark"]){--sf-muted:#434f5c}
+.strip{display:flex;gap:6px;margin:0 0 12px}
+.dt{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dt i{width:100%;max-width:34px;height:8px;border-radius:999px;background:rgba(130,145,166,.28)}
+.dt.ok i{background:var(--teal)}.dt.fast i{background:var(--amber);opacity:.7}
+.dt.now i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--teal)}
+.dt em{font:600 11px var(--sf-type-font);font-style:normal;color:var(--sf-muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips:empty{display:none}
+.chips .chip{min-height:44px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trk{margin:0 2px 14px}
+.trk .tl{display:flex;justify-content:space-between;font:600 12px var(--sf-type-font);color:var(--sf-muted);font-variant-numeric:tabular-nums}
+.trk .tl.s{margin-top:6px;font-weight:500}
+.trk .tb{position:relative;height:10px;border-radius:999px;background:rgba(130,145,166,.24);margin-top:6px}
+.trk .tb i{display:block;height:100%;border-radius:inherit;background:var(--teal);transition:width var(--sf-motion-reveal) var(--sf-motion-ease)}
+.trk .tb b{position:absolute;top:-4px;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:var(--sf-ink-strong)}
+.skl{display:grid;gap:10px;padding:6px 4px 2px}
+.skl i{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,rgba(130,145,166,.18) 25%,rgba(130,145,166,.34) 50%,rgba(130,145,166,.18) 75%);background-size:200% 100%;animation:shim 1.3s linear infinite}
+.skl i:nth-child(2){width:78%}.skl i:nth-child(3){width:52%}
+@keyframes shim{to{background-position:-200% 0}}
+@keyframes reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+#chart svg.ch{animation:reveal 900ms var(--sf-motion-ease) both}
+.panel>.card{margin-bottom:16px}
+@media(prefers-reduced-motion:reduce){.skl i,#chart svg.ch{animation:none}}
+.fin textarea{overflow:hidden;scrollbar-width:thin}
+.fin:focus-within textarea,.fin textarea:not(:placeholder-shown){overflow:auto}
+
+/* Polish pass: Log and Plan details */
+.fl input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.fl input[type=number]::-webkit-inner-spin-button,.fl input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.fl input::placeholder,.fin textarea::placeholder,.dn input::placeholder{color:var(--sf-muted);opacity:.8}
+.fl input{font-variant-numeric:tabular-nums}
+table.t td,table.t th{font-variant-numeric:tabular-nums}
+.sub{max-width:62ch;text-wrap:pretty}
+.empty{padding:26px 20px;line-height:1.5;text-wrap:balance}
+#dDay{min-width:0}
+#dDay,#dI{font-variant-numeric:tabular-nums}
+.upl .btn{gap:8px}
+.lnk{text-underline-offset:3px}
+@media(hover:hover){
+.lnk:hover{text-decoration:underline}
+.ah:hover,.sw button:not(.on):hover,.chip:hover{color:var(--sf-ink-strong)}
+.dn button:hover{transform:translateY(-1px)}
+.dn button{transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}}
+.dn button:active{transition-duration:var(--sf-motion-immediate)}
+.fl input:focus-visible,.fl textarea:focus-visible,.fin textarea:focus-visible,.dn input:focus-visible{outline-offset:1px}
+@media(max-width:360px){.f3,.upl{grid-template-columns:1fr}}
