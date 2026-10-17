@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151d2a" media="(prefers-color-scheme: dark)">
-<title>Shivam Rathi — Health Plan</title>
+<title>Shivam Rathi · Health Plan</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2">
 <link rel="icon" href="icons/favicon-32.png?v=2" sizes="32x32">
@@ -29,7 +29,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 </script>
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/google-sans-latin.woff2">
 <link rel="stylesheet" href="assets/sea-glass.css?v=1">
-<link rel="stylesheet" href="assets/health.css?v=13">
+<link rel="stylesheet" href="assets/health.css?v=15">
 <script defer src="assets/sea-glass.js?v=1"></script>
 </head>
 <body class="sf-app">
@@ -56,7 +56,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
   </div>
 
   <div class="card sf-card sf-glass" id="food">
-    <h3 class="eyebrow"><span data-ic="food"></span>Food today<span class="tag tg2" id="fStat" style="margin-left:auto">No entries</span></h3>
+    <h2 class="eyebrow"><span data-ic="food"></span>Food today<span class="tag tg2" id="fStat" style="margin-left:auto">No entries</span></h2>
     <div class="strip" id="fStrip" role="img" aria-label="Last 7 days of logging"></div>
     <div class="kcal" id="fKc" style="margin-bottom:4px">0 <span>/ 1950 kcal</span></div>
     <div class="ftot" id="fLeft"></div>
@@ -111,7 +111,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
     <div class="kv"><span>Fibre</span><span id="kF"></span></div>
     <div class="kv"><span>Carbs and fat</span><span>Tracked, no target</span></div>
     <button class="lnk" type="button" data-go="settings">Change targets and reminders in Settings</button>
-    <div class="note">Protein at every meal — eggs, curd, dal, paneer, chicken, whey. Cut the rice and roti, never the dal or paneer. One meal out per week, counted.</div>
+    <div class="note">Protein at every meal: eggs, curd, dal, paneer, chicken, whey. Cut the rice and roti, never the dal or paneer. One meal out per week, counted.</div>
   </div>
 
   <div class="card sf-card sf-glass">
@@ -120,13 +120,13 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
     <div class="rule"><span data-ic="bolt"></span><div><b>Cardio 1×</b>, 30–40 min easy.</div></div>
     <div class="rule"><span data-ic="route"></span><div><b>9,000 steps</b> daily. Beats a second cardio session.</div></div>
     <div class="rule"><span data-ic="moon"></span><div><b>7 hours sleep.</b> Short sleep raises hunger at the same calories.</div></div>
-    <div class="rule"><span data-ic="pause"></span><div><b>If fatigued</b>, cut sets — never the weight on the bar.</div></div>
+    <div class="rule"><span data-ic="pause"></span><div><b>If fatigued</b>, cut sets, never the weight on the bar.</div></div>
   </div>
 
   <div class="card sf-card sf-glass">
     <h3 class="eyebrow"><span data-ic="flask"></span>Medical follow-up</h3>
-    <div class="rule"><span data-ic="sun"></span><div><b>Vitamin D 21.4</b> — insufficient. Ask about a correction dose, recheck at 12 weeks.</div></div>
-    <div class="rule"><span data-ic="pill"></span><div><b>B12 214, folate 5.11</b> — low-normal, likely driving homocysteine 18.7.</div></div>
+    <div class="rule"><span data-ic="sun"></span><div><b>Vitamin D 21.4</b>, insufficient. Ask about a correction dose, recheck at 12 weeks.</div></div>
+    <div class="rule"><span data-ic="pill"></span><div><b>B12 214, folate 5.11</b>, low-normal, likely driving homocysteine 18.7.</div></div>
     <div class="rule"><span data-ic="labs"></span><div><b>Next panel:</b> fasting lipids, ApoB, hsCRP, fasting insulin, HbA1c, Vit D, B12, homocysteine, total and free testosterone.</div></div>
   </div>
 
@@ -140,7 +140,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
     <div class="kv"><span>9 Dec · Engagement</span><span>75.5–76 kg · 18.5–19% · 34"</span></div>
     <div class="kv"><span>3 Feb · Wedding</span><span>72–72.5 kg · 15–16% · 32–33"</span></div>
     <div class="kv"><span>Steady state after</span><span>73–75 kg · 16–18%</span></div>
-    <p style="font-size:14px;color:var(--sf-muted);margin:12px 0 0">At the wedding: flat stomach, defined upper abs, obliques, clearly athletic. A visible six-pack needs 12–14% — that is a separate block after February.</p>
+    <p style="font-size:14px;color:var(--sf-muted);margin:12px 0 0">At the wedding: flat stomach, defined upper abs, obliques, clearly athletic. A visible six-pack needs 12–14%. That is a separate block after February.</p>
   </div>
 </div>
 
@@ -158,7 +158,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
         <button class="btn gh sm" type="button" data-retry style="flex:none">Retry</button></div>
       <div class="ftot" id="dTot"></div>
       <div id="dList"></div>
-      <div class="fin"><textarea id="dIn" rows="2" maxlength="1000" placeholder="What did you eat on this day?"></textarea>
+      <div class="fin"><textarea id="dIn" rows="1" maxlength="1000" placeholder="What did you eat on this day?"></textarea>
         <button class="btn" type="button" id="dAdd">Add</button></div>
       <button class="lnk" type="button" id="dFast">Mark as a fasting day (0 kcal)</button>
     </div>
@@ -210,7 +210,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 
   <div class="card sf-card sf-glass" style="padding:14px">
     <div class="sx"><table class="t" id="logt"></table></div>
-    <div class="empty" id="le">Nothing logged yet.</div>
+    <div class="empty" id="le">Nothing logged yet. Enter a weight above and tap Check progress.</div>
   </div>
   </div>
 </div>
@@ -517,10 +517,10 @@ applyGoals();
 document.getElementById('day').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',day:'numeric',month:'short'})+' \u00b7 Week '+wkNow();
 
 var PHASE=[
-{to:2,h:'Weeks 1–2 · settle in',p:'Eat 1,950 kcal every day. 120 g protein, 25 g fibre. Lift 3×, cardio 1×, 9,000 steps. Weigh first thing in the morning, before food or water. Most of the early drop is water — that is fine. Hunger peaks now and passes.'},
+{to:2,h:'Weeks 1–2 · settle in',p:'Eat 1,950 kcal every day. 120 g protein, 25 g fibre. Lift 3×, cardio 1×, 9,000 steps. Weigh first thing in the morning, before food or water. Most of the early drop is water, that is fine. Hunger peaks now and passes.'},
 {to:5,h:'Weeks 3–5 · first visible change',p:'Face and jawline sharpen first. Belt in one notch. Checkpoint at week 4: if under 1 kg lost across weeks 3–4, cut 150 calories.'},
 {to:8,h:'Weeks 6–8 · the grind',p:'Upper abdomen flattens, post-lunch crashes fade. Expect a 7–10 day stall in here. Do not react to it.'},
-{to:12.5,h:'Weeks 9–12.5 · engagement condition',p:'Upper abs in good light, V taper in a fitted shirt. Lifts may dip slightly — hold the loads. No crash dieting in the final week.'},
+{to:12.5,h:'Weeks 9–12.5 · engagement condition',p:'Upper abs in good light, V taper in a fitted shirt. Lifts may dip slightly, hold the loads. No crash dieting in the final week.'},
 {to:99,h:'Final push to 3 Feb',p:'Stay at 1,950. Lower belly and love handles recede. Retest bloods in late January.'}];
 function today(){
   /* NT is set further down; early calls use the defaults */
@@ -544,8 +544,8 @@ function today(){
 var ST=[
 ['WK 1–2','Settle in',0,['2.0–2.5 kg down from 83, much of it water','Face and hands less puffy','Hunger peaks, then settles','No adjustments yet']],
 ['WK 3–5','Face changes first',0,['2.5–3.0 kg down','Jawline sharpens, belt in one notch','Energy beats where you started','Week 4 check: under 1 kg? cut 150 kcal']],
-['WK 6–8','The grind',0,['3.5–4.2 kg down','Upper abdomen flattens','Sleep improves, no post-lunch crash','7–10 day stall expected — ignore it']],
-['WK 9–12.5','Engagement',0,['5.5–6.0 kg down → 75.5–76 kg','Upper abs in good light, V taper','Lifts may dip — hold the loads','No crash dieting in the final week']],
+['WK 6–8','The grind',0,['3.5–4.2 kg down','Upper abdomen flattens','Sleep improves, no post-lunch crash','7–10 day stall expected: ignore it']],
+['WK 9–12.5','Engagement',0,['5.5–6.0 kg down → 75.5–76 kg','Upper abs in good light, V taper','Lifts may dip, hold the loads','No crash dieting in the final week']],
 ['9 DEC–3 FEB','Final push',0,['3.5–4.0 kg down → 72–72.5 kg','Lower belly recedes, obliques show','Retest bloods late January','Stay at 1,950 kcal, 120 g protein']]];
 (function(){var t=document.getElementById('tl');
 ST.forEach(function(s,i){var e=document.createElement('div');
@@ -626,7 +626,7 @@ scanTable();
 
 /* ===== biomarkers ===== */
 var M=[
-['Fasting insulin','10.9','µIU/mL','act',74,'Under 8','10.9','Not done','How hard your body works to keep blood sugar normal. Elevated while glucose is still fine — the early stage.','Fat loss is the direct fix. Expect under 8 by February.'],
+['Fasting insulin','10.9','µIU/mL','act',74,'Under 8','10.9','Not done','How hard your body works to keep blood sugar normal. Elevated while glucose is still fine, the early stage.','Fat loss is the direct fix. Expect under 8 by February.'],
 ['HOMA-IR','2.3','index','act',72,'Under 2.0','2.3 calc','—','Insulin and glucose combined into one insulin-resistance score.','Top priority of this plan.'],
 ['LDL','139','mg/dL','act',70,'Under 100','67.8 unreliable','139','Artery-clogging cholesterol. April was distorted by inflammation.','Fat loss plus lower saturated fat.'],
 ['Non-HDL','152.8','mg/dL','act',68,'Under 130','84.8','152.8','Every type of bad cholesterol added together.','Moves with LDL. Retest fasting in January.'],
@@ -641,7 +641,7 @@ var M=[
 ['HbA1c','5.3','%','ok',34,'Under 5.6','5.4','5.3','Average blood sugar over three months. Normal and stable.','Keep it here.'],
 ['Triglycerides','68.8','mg/dL','ok',25,'Under 150','85','68.8','Fat circulating in the blood. Comfortably low.','No action.'],
 ['HDL','50.5','mg/dL','ok',55,'Above 40','29 unreliable','50.5','Protective cholesterol. June is healthy.','Lifting and cardio keep this up.'],
-['Fasting glucose','85','mg/dL','ok',33,'70–99','85','78 random','Normal — your body is still compensating well.','Watch alongside insulin.'],
+['Fasting glucose','85','mg/dL','ok',33,'70–99','85','78 random','Normal: your body is still compensating well.','Watch alongside insulin.'],
 ['TSH','1.61','µIU/mL','ok',30,'0.54–5.3','1.61','Not done','Thyroid, with FT3 3.60 and FT4 1.08 both normal.','Not the reason for the weight gain.'],
 ['eGFR','101','mL/min','ok',20,'Above 90','101–105','93.6','Kidney filtration. Healthy on both methods.','No action.'],
 ['ALT / AST','35/33','U/L','ok',42,'Under 50','19 / 23','35.5 / 32.9','Liver enzymes. June rise likely from lifting.','Recheck after 48 hrs without training.'],
@@ -829,11 +829,11 @@ document.getElementById('go').onclick=function(){
   var wk=Math.max(0,Math.round((pd(dt)-DAY0)/(7*864e5)*10)/10),rows='',en={date:dt,wk:wk};
   var cls='ok',icn='check',hd='',tx='';
   if(kg!=null){en.w=kg;var ex=interp(wk).w,df=kg-ex;
-    if(wk<1){icn='flag';hd='Baseline recorded';tx='Logged '+kg.toFixed(1)+' kg. This is your starting line — come back in two weeks.'}
+    if(wk<1){icn='flag';hd='Baseline recorded';tx='Logged '+kg.toFixed(1)+' kg. This is your starting line. Come back in two weeks.'}
     else if(df>tol(wk)){cls='mid';icn='flat';hd='Behind the curve';
       tx='Plan expects '+ex.toFixed(1)+' kg at week '+wk+'; you are at '+kg.toFixed(1)+'. Lower your daily target by 150 kcal (Plan, Edit targets) and hold two weeks.'}
     else if(df<-tol(wk)){cls='bad';icn='speed';hd='Losing too fast';
-      tx='Plan expects '+ex.toFixed(1)+' kg; you are at '+kg.toFixed(1)+'. Raise your daily target by 150 kcal — faster than 0.7 kg a week costs muscle.'}
+      tx='Plan expects '+ex.toFixed(1)+' kg; you are at '+kg.toFixed(1)+'. Raise your daily target by 150 kcal. Faster than 0.7 kg a week costs muscle.'}
     else{hd='On track';tx='Plan expects '+ex.toFixed(1)+' kg at week '+wk+' and you are at '+kg.toFixed(1)+'. Change nothing.'}
     rows+='<div class="dr"><span class="n">Weight<em>Plan: '+ex.toFixed(1)+' kg at wk '+wk+'</em></span><span class="v">'+kg.toFixed(1)+'</span>'+
       bg((df>0?'+':'')+df.toFixed(1)+' kg',Math.abs(df)<=tol(wk)?'good':df>0?'mid':'bad')+'</div>'}
@@ -846,7 +846,7 @@ document.getElementById('go').onclick=function(){
   if(ins!=null&&glu!=null){var hm=+(ins*glu/405).toFixed(2);en.homa=hm;
     rows+='<div class="dr"><span class="n">HOMA-IR<em>Baseline 2.3 · target under 2.0</em></span><span class="v">'+hm+'</span>'+
       bg(hm<2?'On target':hm<2.3?'Improving':'Still high',hm<2?'good':hm<2.3?'mid':'bad')+'</div>';
-    if(hm<2)tx+=' HOMA-IR is now under 2.0 — the insulin resistance has cleared.';
+    if(hm<2)tx+=' HOMA-IR is now under 2.0, the insulin resistance has cleared.';
     else if(hm<2.3)tx+=' HOMA-IR is moving the right way but not there yet.'}
   BL.forEach(function(m){var v=nv(m[0]);if(v==null)return;en[m[0]]=v;
     var hit=m[4]==='low'?v<=m[3]:v>=m[3],d=v-m[2],bt=m[4]==='low'?d<0:d>0;

@@ -393,3 +393,24 @@ pointer-events:none;transition:transform var(--sf-motion-spatial) var(--sf-motio
 @media(prefers-reduced-motion:reduce){.skl i,#chart svg.ch{animation:none}}
 .fin textarea{overflow:hidden;scrollbar-width:thin}
 .fin:focus-within textarea,.fin textarea:not(:placeholder-shown){overflow:auto}
+
+/* Polish pass: Log and Plan details */
+.fl input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.fl input[type=number]::-webkit-inner-spin-button,.fl input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.fl input::placeholder,.fin textarea::placeholder,.dn input::placeholder{color:var(--sf-muted);opacity:.8}
+.fl input{font-variant-numeric:tabular-nums}
+table.t td,table.t th{font-variant-numeric:tabular-nums}
+.sub{max-width:62ch;text-wrap:pretty}
+.empty{padding:26px 20px;line-height:1.5;text-wrap:balance}
+#dDay{min-width:0}
+#dDay,#dI{font-variant-numeric:tabular-nums}
+.upl .btn{gap:8px}
+.lnk{text-underline-offset:3px}
+@media(hover:hover){
+.lnk:hover{text-decoration:underline}
+.ah:hover,.sw button:not(.on):hover,.chip:hover{color:var(--sf-ink-strong)}
+.dn button:hover{transform:translateY(-1px)}
+.dn button{transition:transform var(--sf-motion-normal) var(--sf-motion-ease)}}
+.dn button:active{transition-duration:var(--sf-motion-immediate)}
+.fl input:focus-visible,.fl textarea:focus-visible,.fin textarea:focus-visible,.dn input:focus-visible{outline-offset:1px}
+@media(max-width:360px){.f3,.upl{grid-template-columns:1fr}}
