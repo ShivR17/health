@@ -345,3 +345,29 @@ pointer-events:none;transition:transform var(--sf-motion-spatial) var(--sf-motio
 .kcal .cu{font-weight:inherit}
 .bar i{transition:width var(--sf-motion-reveal) var(--sf-motion-ease)}
 @media(prefers-reduced-motion:reduce){.panel.on>*,.ml.in{animation:none}.nav .lens{transition:none}}
+
+/* Phase 4: consistency strip, progress track, chips, skeleton, chart reveal, contrast */
+:root:not([data-sf-theme="dark"]){--sf-muted:#434f5c}
+.strip{display:flex;gap:6px;margin:0 0 12px}
+.dt{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dt i{width:100%;max-width:34px;height:8px;border-radius:999px;background:rgba(130,145,166,.28)}
+.dt.ok i{background:var(--teal)}.dt.fast i{background:var(--amber);opacity:.7}
+.dt.now i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--teal)}
+.dt em{font:600 11px var(--sf-type-font);font-style:normal;color:var(--sf-muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips:empty{display:none}
+.chips .chip{min-height:44px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trk{margin:0 2px 14px}
+.trk .tl{display:flex;justify-content:space-between;font:600 12px var(--sf-type-font);color:var(--sf-muted);font-variant-numeric:tabular-nums}
+.trk .tl.s{margin-top:6px;font-weight:500}
+.trk .tb{position:relative;height:10px;border-radius:999px;background:rgba(130,145,166,.24);margin-top:6px}
+.trk .tb i{display:block;height:100%;border-radius:inherit;background:var(--teal);transition:width var(--sf-motion-reveal) var(--sf-motion-ease)}
+.trk .tb b{position:absolute;top:-4px;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:var(--sf-ink-strong)}
+.skl{display:grid;gap:10px;padding:6px 4px 2px}
+.skl i{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,rgba(130,145,166,.18) 25%,rgba(130,145,166,.34) 50%,rgba(130,145,166,.18) 75%);background-size:200% 100%;animation:shim 1.3s linear infinite}
+.skl i:nth-child(2){width:78%}.skl i:nth-child(3){width:52%}
+@keyframes shim{to{background-position:-200% 0}}
+@keyframes reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+#chart svg.ch{animation:reveal 900ms var(--sf-motion-ease) both}
+.panel>.card{margin-bottom:16px}
+@media(prefers-reduced-motion:reduce){.skl i,#chart svg.ch{animation:none}}

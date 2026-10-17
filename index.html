@@ -31,7 +31,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/sea-glass.css?v=1">
-<link rel="stylesheet" href="assets/health.css?v=10">
+<link rel="stylesheet" href="assets/health.css?v=11">
 <script defer src="assets/sea-glass.js?v=1"></script>
 </head>
 <body class="sf-app">
@@ -59,6 +59,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
 
   <div class="card sf-card sf-glass" id="food">
     <h3 class="eyebrow"><span data-ic="food"></span>Food today<span class="tag tg2" id="fStat" style="margin-left:auto">No entries</span></h3>
+    <div class="strip" id="fStrip" role="img" aria-label="Last 7 days of logging"></div>
     <div class="kcal" id="fKc" style="margin-bottom:4px">0 <span>/ 1950 kcal</span></div>
     <div class="ftot" id="fLeft"></div>
     <div class="mac"><div class="bar"><i id="fBk" style="background:var(--teal)"></i></div></div>
@@ -69,8 +70,9 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
       <button class="btn gh sm" type="button" data-retry style="flex:none">Retry</button></div>
     <div id="fList"></div>
     <div class="note" id="fTip" style="display:none"></div>
-    <div class="fin"><textarea id="fIn" rows="1" maxlength="1000" placeholder="Lunch: 2 rotis, chicken tikka, dahi"></textarea>
+    <div class="fin"><textarea id="fIn" rows="1" maxlength="1000" placeholder="Enter food here"></textarea>
       <button class="btn" type="button" id="fAdd">Add</button></div>
+    <div class="chips" id="fChips"></div>
   </div>
 
   <div class="act">
@@ -78,6 +80,7 @@ s();m.addEventListener&&m.addEventListener('change',s)})();
     <p id="actP">Eat 1,950 kcal every day. 120 g protein and 25 g fibre. Lift 3×, cardio 1×, 9,000 steps. Take a clean morning weight and log it.</p>
   </div>
 
+  <div class="trk" id="trk" role="img" aria-label="Weight progress"></div>
   <div class="g2" style="margin-bottom:12px">
     <div class="mini"><div class="k">Start</div><div class="v">83.0<span class="u"> kg</span></div><div class="d">13 Sep</div></div>
     <div class="mini"><div class="k">Latest</div><div class="v" id="mLat">—</div><div class="d" id="mLatD">not logged</div></div>
@@ -530,6 +533,8 @@ function today(){
   if(last){document.getElementById('mLat').innerHTML=last.w.toFixed(1)+'<span class="u"> kg</span>';
     document.getElementById('mLatD').textContent=pd(last.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}).replace('Sept','Sep');
     document.getElementById('mTogo').textContent=(last.w-G.wedKg).toFixed(1)}
+  (function(){var S0=83,T=G.wedKg,sp=S0-T,pc=function(w){return Math.max(0,Math.min(100,(S0-w)*100/sp))},cur=last?last.w:S0;
+    document.getElementById('trk').innerHTML='<div class="tl"><span>'+S0.toFixed(1)+' kg</span><span>'+T+' kg</span></div><div class="tb"><i style="width:'+pc(cur)+'%"></i><b style="left:'+pc(pl.w)+'%" title="Plan"></b></div><div class="tl s"><span>'+(last?cur.toFixed(1)+' kg now':'Not logged')+'</span><span>Plan marker '+pl.w.toFixed(1)+'</span></div>'})();
   for(var i=0;i<PHASE.length;i++){if(wk<=PHASE[i].to){
     document.getElementById('actH').textContent=PHASE[i].h;
     document.getElementById('actP').textContent=PHASE[i].p.replace('1,950',fmt(nt.kcal))
@@ -716,7 +721,7 @@ var EXTRA={};
 function busy(t){
   document.getElementById('mb').innerHTML=
     '<div style="text-align:center;padding:26px 10px">'+
-    '<div class="spin"></div>'+
+    '<div class="skl"><i></i><i></i><i></i></div>'+
     '<div style="font:600 15px var(--sf-type-font);margin-top:14px">'+t+'</div>'+
     '<p style="font-size:12.5px;color:var(--muted);margin:6px 0 0">This takes a few seconds.</p></div>';
   sheetOpen()}
@@ -1027,6 +1032,21 @@ function mealList(L,id){var b=document.getElementById(id);b.innerHTML='';
     e.innerHTML='<span class="k">'+(MT[m.meal]||(isFast(m)?'Fast':'Meal'))+'</span><span class="d">'+esc(m.description)+
       '</span><span class="v">'+fmt(m.kcal)+'</span>';
     e.onclick=function(){mealSheet(m,false)};b.appendChild(e)})}
+function foodExtras(L){
+  var t=ist(),dots='',i,d,D,n;
+  for(i=6;i>=0;i--){d=addDays(t,-i);D=dayOf(d);n=D.length?(D.every(isFast)?'fast':'ok'):(i===0?'now':'miss');
+    dots+='<span class="dt '+n+'" title="'+d+'"><i></i><em>'+new Date(d+'T00:00:00Z').toLocaleDateString('en-US',{weekday:'narrow',timeZone:'UTC'})+'</em></span>'}
+  document.getElementById('fStrip').innerHTML=dots;
+  var h=+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',hour:'2-digit',hour12:false}).format(new Date())%24,
+    have={};L.forEach(function(m){have[m.meal]=1});
+  var nx=h<11?'breakfast':h<16?'lunch':h<20?'dinner':'snack';
+  if(have[nx]&&nx!=='snack')nx=nx==='breakfast'?'lunch':nx==='lunch'?'dinner':'snack';
+  var fl=document.getElementById('fLeft');
+  if(USER&&!L.some(isFast))fl.textContent+=' · '+MT[nx]+' is next';
+  var cnt={};MEALS.forEach(function(m){if(m.meal===nx&&m.description&&!isFast(m)){var k=m.description.trim();cnt[k]=(cnt[k]||0)+1}});
+  var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}).slice(0,3),c=document.getElementById('fChips');
+  c.innerHTML='';top.forEach(function(k){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=k.length>34?k.slice(0,33)+'…':k;
+    b.onclick=function(){var f=document.getElementById('fIn');f.value=k;f.dispatchEvent(new Event('input',{bubbles:true}));f.focus()};c.appendChild(b)})}
 function foodToday(){
   var L=dayOf(ist()),t=sum(L),left=NT.kcal-t.kcal,st=document.getElementById('fStat');
   document.getElementById('fKc').innerHTML='<b class="cu">'+fmt(t.kcal)+'</b> <span>/ '+fmt(NT.kcal)+' kcal</span>';countUp(document.querySelector('#fKc .cu'),t.kcal);
@@ -1038,7 +1058,7 @@ function foodToday(){
   document.getElementById('fP').textContent=t.protein_g+' / '+NT.protein_g+' g';bar('fBp',t.protein_g,NT.protein_g);hit('fBp',t.protein_g,NT.protein_g);
   document.getElementById('fF').textContent=t.fibre_g+' / '+NT.fibre_g+' g';bar('fBf',t.fibre_g,NT.fibre_g);hit('fBf',t.fibre_g,NT.fibre_g);
   document.getElementById('fCF').textContent='Carbs '+fmt(t.carbs_g)+' g · Fat '+fmt(t.fat_g)+' g';
-  mealList(L,'fList');
+  mealList(L,'fList');foodExtras(L);
   document.getElementById('fErr').style.display=USER&&STALE?'flex':'none';
   var tip=L.filter(function(m){return m.advice}).slice(-1)[0],tb=document.getElementById('fTip');
   tb.style.display=tip?'':'none';if(tip)tb.innerHTML='<b>Tip:</b> '+esc(tip.advice)}
@@ -1302,7 +1322,7 @@ function draftPut(){try{localStorage.setItem(DKEY,JSON.stringify({fIn:document.g
 (function(){try{var d=JSON.parse(localStorage.getItem(DKEY)||'{}');
   ['fIn','dIn'].forEach(function(k){if(d[k])document.getElementById(k).value=d[k]})}catch(e){}})();
 ['fIn','dIn'].forEach(function(k){document.getElementById(k).addEventListener('input',draftPut)});
-document.getElementById('fAdd').onclick=function(){estimate(document.getElementById('fIn').value,ist(),{src:'fIn'})};
+document.getElementById('fAdd').onclick=function(){try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}estimate(document.getElementById('fIn').value,ist(),{src:'fIn'})};
 document.getElementById('dAdd').onclick=function(){estimate(document.getElementById('dIn').value,DAY,{src:'dIn'})};
 document.getElementById('dPrev').onclick=function(){DAY=addDays(DAY,-1);logDay()};
 document.getElementById('dNext').onclick=function(){DAY=addDays(DAY,1);logDay()};
